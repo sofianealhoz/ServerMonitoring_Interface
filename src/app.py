@@ -2,6 +2,7 @@ from flask import Flask, render_template,jsonify
 import random
 import time
 from threading import Thread
+from .get_cpu import get_cpu
 
 
 app = Flask(__name__)
@@ -13,10 +14,12 @@ max_points = 100
 usages = []
 times = []
 
+url_agent_cpu = "http://localhost:8000/usage" 
+
 def update_data():
     global usages, times
     while True:
-        new_usage = random.randint(40, 80)
+        new_usage = get_cpu(url_agent_cpu)
         usages.append(new_usage)
         times.append(time.time())
 
