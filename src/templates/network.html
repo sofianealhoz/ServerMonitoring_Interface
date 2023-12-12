@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     <title>Dashboard</title>
 </head>
@@ -15,9 +14,57 @@
             <li><a href="network.html"> Network</a></li>
         </ul>
     </nav>
+
+    <div id="dtr-graph">
+
+        <script>
+            var layout = {
+                title: 'Download Transfer Rate',
+                xaxis: {
+                    title: 'Time',
+                    type: 'date',  // Utilisation du type de données date
+                    tickformat: '%H:%M:%S'  // Format des ticks de l'axe X pour l'heure
+                },
+                yaxis: {
+                    title: 'Download Transfer Rate',
+                    range: [0, 100]
+                }
+            };
+    
+            function updateGraph() {
+                fetch('/graph/dataNetwork')
+                    .then(response => response.json())
+                    .then(data => {
+                        var bytes_sent = data.bytes_sent;
+                        var bytes_received = data.bytes_received;
+                        var times = data.times.map(ts => new Date(ts * 1000));
+    
+                        if (bytes_sent.length > {{ max_points }}) {
+                            bytes_sent = bytes_sent.slice(-{{ max_points }});
+                            bytes_received = bytes_received.slice(-{{ max_points }});
+                            times = times.slice(-{{ max_points }});
+                        }
+    
+                        
+                        var points = {
+                            x: times,
+                            y: bytes_received,
+                            text: downloadtransferRate,
+                            type: 'scatter',
+                            mode: 'lines+markers'
+                        };
+    
+                        Plotly.newPlot('dtr-graph', [points], layout);
+                    });
+            };
+    
+            setInterval(updateGraph, 1000);
+            updateGraph(); // Appel initial
+        </script>
+    </div>
     
     
     <!-- Ajoutez le contenu de votre tableau de bord ici -->
-    <img src="data:image/png;base64,{{ plot_url }}" alt="Matplotlib Plot">
+    
 </body>
 </html>

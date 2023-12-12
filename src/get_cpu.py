@@ -1,7 +1,7 @@
 import requests
 
-url = "http://localhost:8000/usage"
-url_core = "http://localhost:8000/core" 
+#url = "http://localhost:8000/usage"
+#url_core = "http://localhost:8000/core" 
 
 def get_cpu(url, url2):
     # Exemple de requête GET

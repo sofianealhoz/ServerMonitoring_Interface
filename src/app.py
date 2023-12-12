@@ -3,6 +3,7 @@ import random
 import time
 from threading import Thread
 from get_cpu import get_cpu, get_number_cpu
+from get_network import get_network_info
 
 app = Flask(__name__)
 
@@ -11,22 +12,34 @@ max_points = 100
 
 # Initialisation des données du graphique
 usages = []
+network_data = []
 times = []
 
 # url pour les requêtes ( à changer )
 url_agent_cpu = "http://localhost:8000/usage" 
 url_agent_core = "http://localhost:8000/core" 
+url_agent_network = "http://localhost:8000/usageNetwork"
 
 def update_data():
-    global usages, times
+    global usages, times, network_data
     while True:
+        # Cpu info 
         new_usage = get_cpu(url_agent_cpu, url_agent_core)
         usages.append(new_usage)
+
+        # Network info 
+        new_data = get_network_info(url_agent_network)
+        network_data.append(new_data)
+
         times.append(time.time())
         
 
         if len(usages) > max_points:
             usages = usages[-max_points:]
+            times = times[-max_points:]
+
+        if len(network_data) > max_points:
+            network_data = network_data[-max_points:]
             times = times[-max_points:]
 
         time.sleep(1)
@@ -37,7 +50,7 @@ def index():
 
 @app.route('/network.html')
 def network():
-    return render_template('/network.html')
+    return render_template('/network.html',max_points = max_points)
 
 @app.route('/system.html')
 def system():
@@ -48,6 +61,11 @@ def system():
 def get_graph_data():
     global usages, times
     return jsonify(usages=usages, times=times)
+
+@app.route('/graph/dataNetwork')
+def get_network_graph_data():
+    global network_data,times
+    return jsonify(network_data= network_data,times = times)
 
 if __name__ == '__main__':
     update_thread = Thread(target=update_data)
