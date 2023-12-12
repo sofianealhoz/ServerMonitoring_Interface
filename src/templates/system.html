@@ -14,9 +14,14 @@
             <li><a href="network.html"> Network</a></li>
         </ul>
     </nav>
+
+    <div id ="cpu-core">
+        <h3>Number of core : </h3>
+        <p>{{nb_core}}</p> 
+    </div>
     
     
-    <div id="cpu-graph"></div>
+    <div id="cpu-graph">
 
     <script>
         var layout = {
@@ -60,5 +65,6 @@
         setInterval(updateGraph, 1000);
         updateGraph(); // Appel initial
     </script>
+    </div>
 </body>
 </html>

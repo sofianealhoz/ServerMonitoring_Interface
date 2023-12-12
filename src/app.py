@@ -2,7 +2,7 @@ from flask import Flask, render_template,jsonify
 import random
 import time
 from threading import Thread
-from get_cpu import get_cpu
+from get_cpu import get_cpu, get_number_cpu
 
 app = Flask(__name__)
 
@@ -13,7 +13,9 @@ max_points = 100
 usages = []
 times = []
 
+# url pour les requêtes ( à changer )
 url_agent_cpu = "http://localhost:8000/usage" 
+url_agent_core = "http://localhost:8000/core" 
 
 def update_data():
     global usages, times
@@ -21,6 +23,7 @@ def update_data():
         new_usage = get_cpu(url_agent_cpu)
         usages.append(new_usage)
         times.append(time.time())
+        
 
         if len(usages) > max_points:
             usages = usages[-max_points:]
@@ -38,7 +41,8 @@ def network():
 
 @app.route('/system.html')
 def system():
-    return render_template('/system.html', max_points = max_points)
+    nb_core = get_number_cpu(url_agent_core)
+    return render_template('/system.html', max_points = max_points, nb_core = nb_core)
 
 @app.route('/graph/data')
 def get_graph_data():
