@@ -1,0 +1,10 @@
+installation de python sur l'image alpine:latest :
+apk add python3
+apk add py3-pip
+apk add py3-virtualenv
+virtualenv venv
+apk add py3-pytest
+apk add py3-psutil
+apk add py3-flake8
+apk add py3-coverage
+apk add py3-apache-log-parser
