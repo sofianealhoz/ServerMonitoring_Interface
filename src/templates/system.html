@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2> System Status </h2>
+    <nav class="menu"> <span class="titre"> Dashboard </span>
+        <ul>
+            <li><a href="system.html"> Système status</a></li>
+            <li><a href="network.html"> Network</a></li>
+        </ul>
+    </nav>
+    
+    
+    <div id="cpu-graph"></div>
+
+    <script>
+        var layout = {
+            title: 'CPU Usage Over Time',
+            xaxis: {
+                title: 'Time',
+                type: 'date',  // Utilisation du type de données date
+                tickformat: '%H:%M:%S'  // Format des ticks de l'axe X pour l'heure
+            },
+            yaxis: {
+                title: 'CPU Usage (%)',
+                range: [0, 100]
+            }
+        };
+
+        function updateGraph() {
+            fetch('/graph/data')
+                .then(response => response.json())
+                .then(data => {
+                    var usages = data.usages;
+                    var times = data.times.map(ts => new Date(ts * 1000));
+
+                    if (usages.length > {{ max_points }}) {
+                        usages = usages.slice(-{{ max_points }});
+                        times = times.slice(-{{ max_points }});
+                    }
+
+                    var cpuPercentages = usages.map(u => u + '%');
+                    var points = {
+                        x: times,
+                        y: usages,
+                        text: cpuPercentages,
+                        type: 'scatter',
+                        mode: 'lines+markers'
+                    };
+
+                    Plotly.newPlot('cpu-graph', [points], layout);
+                });
+        };
+
+        setInterval(updateGraph, 1000);
+        updateGraph(); // Appel initial
+    </script>
+</body>
+</html>
