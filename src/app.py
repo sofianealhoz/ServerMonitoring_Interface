@@ -20,7 +20,7 @@ url_agent_core = "http://localhost:8000/core"
 def update_data():
     global usages, times
     while True:
-        new_usage = get_cpu(url_agent_cpu)
+        new_usage = get_cpu(url_agent_cpu, url_agent_core)
         usages.append(new_usage)
         times.append(time.time())
         

@@ -3,7 +3,7 @@ import requests
 url = "http://localhost:8000/usage"
 url_core = "http://localhost:8000/core" 
 
-def get_cpu(url):
+def get_cpu(url, url2):
     # Exemple de requête GET
     response = requests.get(url)
     usage_cpu = 0
@@ -12,7 +12,7 @@ def get_cpu(url):
         data = response.json()  # Si la réponse est en format JSON
         for i in range(len(data)):
             usage_cpu += float(data[i]['usage'])
-        return usage_cpu
+        return usage_cpu / get_number_cpu(url2)
     else:
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
@@ -27,5 +27,6 @@ def get_number_cpu(url):
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
 
 
-print(get_cpu(url))
-print(get_number_cpu(url_core))
+#print(get_cpu(url))
+#print(get_number_cpu(url_core))
+
