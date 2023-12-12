@@ -2,8 +2,7 @@ from flask import Flask, render_template,jsonify
 import random
 import time
 from threading import Thread
-from .get_cpu import get_cpu
-
+from get_cpu import get_cpu
 
 app = Flask(__name__)
 
