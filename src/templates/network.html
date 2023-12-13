@@ -29,6 +29,7 @@
                     .then(response => response.json())
                     .then(data => {
                         var bytes_sent = data.network_utr;
+                        var names = data.network_names;
                         var bytes_received = data.network_dtr;
                         var times = data.times.map(ts => new Date(ts * 1000));
     
@@ -37,24 +38,31 @@
                             bytes_received = bytes_received.slice(-{{ max_points }});
                             times = times.slice(-{{ max_points }});
                         }
-    
-                        var dtr = bytes_received.map(u => u + "b/s")
-                        var points = {
-                            x: times,
-                            y: bytes_received,
-                            text: dtr,
-                            type: 'scatter',
-                            mode: 'lines'
+
+                        var traces = [];
+                        len = bytes_received.length;
+                        console.log(len);
+                        for (let i=0 ; i<len; i++){
+                            var data_utr = [bytes_received[0]]
+                            console.log(data_utr)
+                            for (let j=0; j<bytes_received[i].length; j++) {
+                                
+                                data_utr[0][j].append(bytes_received[i][j]);
+                        
+                                var dtr = data_utr[0][j].map(u => u + "b/s")
+                                var trace = {
+                                    x: times,
+                                    y: data_utr[0][j],
+                                    text: dtr,
+                                    type: 'scatter',
+                                    mode: 'lines',
+                                    name: network_names[0][j]
+                                }
+
+                            }
                         };
 
-                        var utr = bytes_sent.map(u => u + "b/s")
-                        var points2 = {
-                            x: times,
-                            y: bytes_sent,
-                            text: utr,
-                            type: 'scatter',
-                            mode: 'lines'
-                        };
+                        
 
                         var layout1 = {
                             title: 'Download Transfer Rate',
@@ -66,7 +74,21 @@
                             },
                             yaxis: {
                                 title: 'Download Transfer Rate',     
+                                range : [-0.01,0.01]
                             }
+                        };
+
+                        Plotly.newPlot('dtr-graph', traces, layout1,config);
+
+                        
+
+                        var utr = bytes_sent.map(u => u + "b/s")
+                        var points2 = {
+                            x: times,
+                            y: bytes_sent,
+                            text: utr,
+                            type: 'scatter',
+                            mode: 'lines'
                         };
 
                         var layout2 = {
@@ -79,10 +101,11 @@
                             },
                             yaxis: {
                                 title: 'Upload Transfer Rate',
+                                range : [-0.01,0.01]
                             }
                         };
                 
-                        Plotly.newPlot('dtr-graph', [points], layout1,config);
+                        
                         Plotly.newPlot('utr-graph',[points2],layout2,config);
                     });
             };

@@ -3,7 +3,7 @@ import random
 import time
 from threading import Thread
 from get_cpu import get_cpu, get_number_cpu
-from get_network import get_network_dtr
+from get_network import get_network_dtr, get_network_utr, get_network_name
 
 app = Flask(__name__)
 
@@ -15,6 +15,7 @@ usages = []
 network_dtr = []
 network_utr = []
 times = []
+network_names = []
 
 # url pour les requêtes ( à changer )
 url_agent_cpu = "http://localhost:8000/usage" 
@@ -22,7 +23,7 @@ url_agent_core = "http://localhost:8000/core"
 url_agent_network = "http://localhost:8000/usageNetwork"
 
 def update_data():
-    global usages, times, network_dtr,network_utr
+    global usages, times, network_dtr,network_utr, network_names
     while True:
         # Cpu info 
         new_usage = get_cpu(url_agent_cpu, url_agent_core)
@@ -32,8 +33,11 @@ def update_data():
         new_data = get_network_dtr(url_agent_network)
         network_dtr.append(new_data)
 
-        new_data = get_network_dtr(url_agent_network)
+        new_data = get_network_utr(url_agent_network)
         network_utr.append(new_data)
+
+        new_data = get_network_name(url_agent_network)
+        network_names.append(new_data)
 
         times.append(time.time())
         
@@ -72,11 +76,11 @@ def get_graph_data():
 
 @app.route('/graph/dataNetwork')
 def get_network_graph_data():
-    global network_dtr,times,network_utr
-    return jsonify(network_dtr= network_dtr,network_utr=network_utr,times = times)
+    global network_dtr,times,network_utr,network_names
+    return jsonify(network_dtr= network_dtr,network_utr=network_utr,times = times,network_names=network_names)
 
 if __name__ == '__main__':
     update_thread = Thread(target=update_data)
     update_thread.daemon = True
     update_thread.start()
-    app.run(debug=True)
+    app.run('0.0.0.0', port=5000, debug=True)
