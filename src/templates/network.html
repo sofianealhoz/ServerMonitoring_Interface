@@ -18,29 +18,22 @@
     <div id="dtr-graph">
 
         <script>
-            var layout1 = {
-                title: 'Download Transfer Rate',
-                xaxis: {
-                    title: 'Time',
-                    type: 'date',  // Utilisation du type de données date
-                    tickformat: '%H:%M:%S'  // Format des ticks de l'axe X pour l'heure
-                },
-                yaxis: {
-                    title: 'Download Transfer Rate',
-                    
-                }
+            
+
+            var config = {
+                displayModeBar: false  // Désactiver la barre de paramètres
             };
     
             function updateGraph() {
                 fetch('/graph/dataNetwork')
                     .then(response => response.json())
                     .then(data => {
-                        
+                        var bytes_sent = data.network_utr;
                         var bytes_received = data.network_dtr;
                         var times = data.times.map(ts => new Date(ts * 1000));
     
                         if (bytes_received.length > {{ max_points }}) {
-                            
+                            bytes_sent = bytes_sent.slice(-{{ max_points }});
                             bytes_received = bytes_received.slice(-{{ max_points }});
                             times = times.slice(-{{ max_points }});
                         }
@@ -51,16 +44,56 @@
                             y: bytes_received,
                             text: dtr,
                             type: 'scatter',
-                            mode: 'lines+markers'
+                            mode: 'lines'
                         };
-    
-                        Plotly.newPlot('dtr-graph', [points], layout1);
+
+                        var utr = bytes_sent.map(u => u + "b/s")
+                        var points2 = {
+                            x: times,
+                            y: bytes_sent,
+                            text: utr,
+                            type: 'scatter',
+                            mode: 'lines'
+                        };
+
+                        var layout1 = {
+                            title: 'Download Transfer Rate',
+                            xaxis: {
+                                title: 'Time',
+                                type: 'date',  // Utilisation du type de données date
+                                tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
+                                range: [times[0], times[times.length - 1]]
+                            },
+                            yaxis: {
+                                title: 'Download Transfer Rate',     
+                            }
+                        };
+
+                        var layout2 = {
+                            title: 'Upload Transfer Rate',
+                            xaxis: {
+                                title: 'Time',
+                                type: 'date',  // Utilisation du type de données date
+                                tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
+                                range: [times[0], times[times.length - 1]]
+                            },
+                            yaxis: {
+                                title: 'Upload Transfer Rate',
+                            }
+                        };
+                
+                        Plotly.newPlot('dtr-graph', [points], layout1,config);
+                        Plotly.newPlot('utr-graph',[points2],layout2,config);
                     });
             };
     
             setInterval(updateGraph, 2000);
             updateGraph(); // Appel initial
         </script>
+    </div>
+
+    <div id="utr-graph">
+        
     </div>
     
     
