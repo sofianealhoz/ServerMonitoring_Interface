@@ -34,7 +34,12 @@
             yaxis: {
                 title: 'CPU Usage (%)',
                 range: [0, 100]
-            }
+            },
+            displayModeBar: false  // Désactiver la barre de paramètres
+        };
+
+        var config = {
+            displayModeBar: false  // Désactiver la barre de paramètres
         };
 
         function updateGraph() {
@@ -58,7 +63,7 @@
                         mode: 'lines+markers'
                     };
 
-                    Plotly.newPlot('cpu-graph', [points], layout);
+                    Plotly.newPlot('cpu-graph', [points], layout,config);
                 });
         };
 

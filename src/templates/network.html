@@ -18,7 +18,7 @@
     <div id="dtr-graph">
 
         <script>
-            var layout = {
+            var layout1 = {
                 title: 'Download Transfer Rate',
                 xaxis: {
                     title: 'Time',
@@ -27,7 +27,7 @@
                 },
                 yaxis: {
                     title: 'Download Transfer Rate',
-                    range: [0, 100]
+                    
                 }
             };
     
@@ -35,30 +35,30 @@
                 fetch('/graph/dataNetwork')
                     .then(response => response.json())
                     .then(data => {
-                        var bytes_sent = data.bytes_sent;
-                        var bytes_received = data.bytes_received;
+                        
+                        var bytes_received = data.network_dtr;
                         var times = data.times.map(ts => new Date(ts * 1000));
     
-                        if (bytes_sent.length > {{ max_points }}) {
-                            bytes_sent = bytes_sent.slice(-{{ max_points }});
+                        if (bytes_received.length > {{ max_points }}) {
+                            
                             bytes_received = bytes_received.slice(-{{ max_points }});
                             times = times.slice(-{{ max_points }});
                         }
     
-                        
+                        var dtr = bytes_received.map(u => u + "b/s")
                         var points = {
                             x: times,
                             y: bytes_received,
-                            text: downloadtransferRate,
+                            text: dtr,
                             type: 'scatter',
                             mode: 'lines+markers'
                         };
     
-                        Plotly.newPlot('dtr-graph', [points], layout);
+                        Plotly.newPlot('dtr-graph', [points], layout1);
                     });
             };
     
-            setInterval(updateGraph, 1000);
+            setInterval(updateGraph, 2000);
             updateGraph(); // Appel initial
         </script>
     </div>
