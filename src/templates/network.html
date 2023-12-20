@@ -17,107 +17,94 @@
 
     <div id="dtr-graph">
 
-        <script>
-            
-
-            var config = {
-                displayModeBar: false  // Désactiver la barre de paramètres
-            };
-    
-            function updateGraph() {
-                fetch('/graph/dataNetwork')
-                    .then(response => response.json())
-                    .then(data => {
-                        var bytes_sent = data.network_utr;
-                        var names = data.network_names;
-                        var bytes_received = data.network_dtr;
-                        var times = data.times.map(ts => new Date(ts * 1000));
-    
-                        if (bytes_received.length > {{ max_points }}) {
-                            bytes_sent = bytes_sent.slice(-{{ max_points }});
-                            bytes_received = bytes_received.slice(-{{ max_points }});
-                            times = times.slice(-{{ max_points }});
-                        }
-
-                        var traces = [];
-                        len = bytes_received.length;
-                        console.log(len);
-                        for (let i=0 ; i<len; i++){
-                            var data_utr = [bytes_received[0]]
-                            console.log(data_utr)
-                            for (let j=0; j<bytes_received[i].length; j++) {
-                                
-                                data_utr[0][j].append(bytes_received[i][j]);
-                        
-                                var dtr = data_utr[0][j].map(u => u + "b/s")
-                                var trace = {
-                                    x: times,
-                                    y: data_utr[0][j],
-                                    text: dtr,
-                                    type: 'scatter',
-                                    mode: 'lines',
-                                    name: network_names[0][j]
-                                }
-
-                            }
-                        };
-
-                        
-
-                        var layout1 = {
-                            title: 'Download Transfer Rate',
-                            xaxis: {
-                                title: 'Time',
-                                type: 'date',  // Utilisation du type de données date
-                                tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
-                                range: [times[0], times[times.length - 1]]
-                            },
-                            yaxis: {
-                                title: 'Download Transfer Rate',     
-                                range : [-0.01,0.01]
-                            }
-                        };
-
-                        Plotly.newPlot('dtr-graph', traces, layout1,config);
-
-                        
-
-                        var utr = bytes_sent.map(u => u + "b/s")
-                        var points2 = {
-                            x: times,
-                            y: bytes_sent,
-                            text: utr,
-                            type: 'scatter',
-                            mode: 'lines'
-                        };
-
-                        var layout2 = {
-                            title: 'Upload Transfer Rate',
-                            xaxis: {
-                                title: 'Time',
-                                type: 'date',  // Utilisation du type de données date
-                                tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
-                                range: [times[0], times[times.length - 1]]
-                            },
-                            yaxis: {
-                                title: 'Upload Transfer Rate',
-                                range : [-0.01,0.01]
-                            }
-                        };
-                
-                        
-                        Plotly.newPlot('utr-graph',[points2],layout2,config);
-                    });
-            };
-    
-            setInterval(updateGraph, 2000);
-            updateGraph(); // Appel initial
-        </script>
+        
     </div>
 
     <div id="utr-graph">
         
     </div>
+
+    <script>
+            
+
+        
+        var config = {
+            displayModeBar: false  // Désactiver la barre de paramètres
+        };
+
+        
+
+        function updateGraph() {
+            fetch('/graph/dataNetwork')
+                .then(response => response.json())
+                .then(data => {
+                    var network_dtr = data.network_dtr;
+                    var network_utr = data.network_utr;
+                    var times = data.times.map(ts => new Date(ts * 1000));
+
+                    if (network_dtr.length > {{ max_points }}) {
+                        network_dtr = network_dtr.slice(-{{ max_points }});
+                        network_utr = network_utr.slice(-{{ max_points }})
+                        times = times.slice(-{{ max_points }});
+                    }
+
+                    var layout = {
+                        title: 'Download Transfer Rate',
+                        xaxis: {
+                            title: 'Time',
+                            type: 'date',  // Utilisation du type de données date
+                            tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
+                            range: [times[0], times[times.length - 1]]
+                        },
+                        yaxis: {
+                            title: 'Download Transfer Rate',
+                            
+                        },
+                        displayModeBar: false  // Désactiver la barre de paramètres
+                    };
+
+
+                    var dtr = network_dtr.map(u => u + 'MB/s');
+                    var points = {
+                        x: times,
+                        y: network_dtr,
+                        text: dtr,
+                        type: 'scatter',
+                        mode: 'lines+markers'
+                    };
+
+                    var layout2 = {
+                        title: 'Upload Transfer Rate',
+                        xaxis: {
+                            title: 'Time',
+                            type: 'date',  // Utilisation du type de données date
+                            tickformat: '%H:%M:%S',  // Format des ticks de l'axe X pour l'heure
+                            range: [times[0], times[times.length - 1]]
+                        },
+                        yaxis: {
+                            title: 'Upload Transfer Rate',
+                            
+                        },
+                        displayModeBar: false  // Désactiver la barre de paramètres
+                    };
+
+                    var utr = network_utr.map(u => u + 'MB/s');
+                    var points1 = {
+                        x: times,
+                        y: network_utr,
+                        text: utr,
+                        type: 'scatter',
+                        mode: 'lines+markers'
+                    };
+
+                    Plotly.newPlot('dtr-graph', [points], layout,config);
+                    Plotly.newPlot('utr-graph', [points1], layout2,config);
+                });
+        };
+
+        setInterval(updateGraph, 1000);
+        updateGraph(); // Appel initial
+    </script>
     
     
     <!-- Ajoutez le contenu de votre tableau de bord ici -->
