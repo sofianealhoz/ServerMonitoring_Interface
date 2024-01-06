@@ -10,6 +10,7 @@
     <h2> System Status </h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
+            <li> <a href="/"> Home</a></li>
             <li><a href="system.html"> Système status</a></li>
             <li><a href="network.html"> Network</a></li>
         </ul>
@@ -38,6 +39,20 @@
             displayModeBar: false  // Désactiver la barre de paramètres
         };
 
+        var layout1 = {
+            title: 'RAM Usage Over Time',
+            xaxis: {
+                title: 'Time',
+                type: 'date',  // Utilisation du type de données date
+                tickformat: '%H:%M:%S'  // Format des ticks de l'axe X pour l'heure
+            },
+            yaxis: {
+                title: 'RAM Usage (%)',
+                range: [0, 100]
+            },
+            displayModeBar: false  // Désactiver la barre de paramètres
+        };
+
         var config = {
             displayModeBar: false  // Désactiver la barre de paramètres
         };
@@ -47,6 +62,7 @@
                 .then(response => response.json())
                 .then(data => {
                     var usages = data.usages;
+                    var ramPercent = data.ramPercent;
                     var times = data.times.map(ts => new Date(ts * 1000));
 
                     if (usages.length > {{ max_points }}) {
@@ -63,7 +79,17 @@
                         mode: 'lines+markers'
                     };
 
+                    var ramPercentages = ramPercent.map(u => u + '%');
+                    var points1 = {
+                        x: times,
+                        y: ramPercent,
+                        text: ramPercentages,
+                        type: 'scatter',
+                        mode: 'lines+markers'
+                    };
+
                     Plotly.newPlot('cpu-graph', [points], layout,config);
+                    Plotly.newPlot('ram-graph',[points1], layout1,config);
                 });
         };
 
@@ -71,5 +97,10 @@
         updateGraph(); // Appel initial
     </script>
     </div>
+
+    <div id ='ram-graph'></div>
+
+    
+
 </body>
 </html>
