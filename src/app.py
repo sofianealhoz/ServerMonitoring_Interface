@@ -1,4 +1,4 @@
-from flask import Flask, render_template,jsonify
+from flask import Flask, render_template,jsonify,request, redirect, url_for
 import random
 import time
 from threading import Thread
@@ -64,19 +64,51 @@ def update_data():
 
         time.sleep(1)
 
+
+# Liste pour stocker les infos des servers
+servers= []
+
+def add_server(url):
+    servers.append({'url' : url,'id':len(servers)+1})
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',servers = servers)
 
-@app.route('/network.html')
+@app.route('/add_server_route.html',methods=['GET','POST'])
+def add_server_route():
+    if request.method == 'POST':
+        server_name = request.form.get('server_name')
+        add_server(server_name)
+        return redirect(url_for('index'))
+    return render_template('add_server_route.html')
+
+@app.route('/server/<int:server_id>/infos.html')
+def server_info(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        # Logique pour récupérer les informations du serveur
+        return render_template('infos.html', server=server)
+    else:
+        return render_template('not_found.html')
+
+@app.route('/server/<int:server_id>/network.html')
 def network():
-    return render_template('/network.html',max_points = max_points)
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        return render_template('/network.html',max_points = max_points,server=server)
+    else:
+        return render_template('not_found.html')
 
-@app.route('/system.html')
+@app.route('/server/<int:server_id>/system.html')
 def system():
-    nb_core = get_number_cpu(url_agent_core)
-    total_ram = get_ram_total(url_agent_ram)
-    return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram)
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        nb_core = get_number_cpu(url_agent_core)
+        total_ram = get_ram_total(url_agent_ram)
+        return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,server=server)
+    else:
+        return render_template('not_found.html')
 
 @app.route('/graph/data')
 def get_graph_data():
