@@ -1,7 +1,7 @@
 import requests 
 
 
-#url  = "http://localhost:8000/usageNetwork"
+#url  = "http://karadoc.telecomste.net/usageNetwork"
 
 def get_network_dtr(url):
     response = requests.get(f"{url}/usageNetwork")

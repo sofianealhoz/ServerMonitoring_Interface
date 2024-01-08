@@ -1,6 +1,6 @@
 import requests
 
-#url = "http://localhost:8000/usageRam"
+#url = "http://karadoc.telecomste.net/usageRam"
 
 
 def get_ram_total(url):

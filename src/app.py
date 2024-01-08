@@ -22,10 +22,10 @@ network_names = []
 
 # url pour les requêtes ( à changer )
 
-url= "karadoc.telecomste.net:8080" 
-url_agent_ram = "karadoc.telecomste.net:8080/usageRam" 
-url_agent_core = "karadoc.telecomste.net:8080/core" 
-url_agent_network = "karadoc.telecomste.net:8080/usageNetwork"
+url= "http://karadoc.telecomste.net:8080" 
+url_agent_ram = "http://karadoc.telecomste.net:8080/usageRam" 
+url_agent_core = "http://karadoc.telecomste.net:8080/core" 
+url_agent_network = "http://karadoc.telecomste.net:8080/usageNetwork"
 
 
 def update_data():
@@ -74,7 +74,7 @@ def update_data():
 
 # Liste pour stocker les infos des servers
 servers= [
-    {'url': 'http://localhost:8000', 'id' : 1},
+    {'url': url, 'id' : 1},
 ]
 
 #Ajout d'un serveur

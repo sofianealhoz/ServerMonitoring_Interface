@@ -1,6 +1,6 @@
 import requests
 
-#url = "http://localhost:8000"
+url = "http://karadoc.telecomste.net:8080"
 
 
 def get_cpu(url):
