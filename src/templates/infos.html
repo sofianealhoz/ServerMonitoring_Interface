@@ -11,11 +11,9 @@
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
             <li><a href="/">Menu Principal</a></li>
-            <li><a href="add_server_route.html">Ajouter un Server</a></li>
-            {% for server in servers %}
-            <li><a href="{{ url_for('server_info', server_id=server['id']) }}">Serveur {{ server['id'] }}</a></li>
-            {% endfor %}
-            
+            <li><a href="infos.html">Infos Server</a></li>
+            <li><a href="system.html"> Système status</a></li>
+            <li><a href="network.html"> Network</a></li>
         </ul>
     </nav>
     

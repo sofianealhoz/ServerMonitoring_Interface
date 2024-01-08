@@ -11,13 +11,19 @@
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
             <li><a href="/">Menu Principal</a></li>
-            <li><a href="add_server_route.html">Ajouter un Server</a></li>
-            {% for server in servers %}
-            <li><a href="{{ url_for('server_info', server_id=server['id']) }}">Serveur {{ server['id'] }}</a></li>
-            {% endfor %}
+            <li><a href="add_server_route.html">Ajouter un serveur</a></li>
+            
             
         </ul>
     </nav>
+
+    <div id="add-server">
+        <form method="POST" action="{{ url_for('add_server_route') }}">
+            <label for="server_url">Url du serveur:</label>
+            <input type="text" id="server_name" url="server_url" required>
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
     
 </body>
 </html>
