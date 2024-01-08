@@ -21,10 +21,12 @@ times = []
 network_names = []
 
 # url pour les requêtes ( à changer )
-url= "http://localhost:8000" 
-url_agent_ram = "http://localhost:8000/usageRam" 
-url_agent_core = "http://localhost:8000/core" 
-url_agent_network = "http://localhost:8000/usageNetwork"
+
+url= "karadoc.telecomste.net:8080" 
+url_agent_ram = "karadoc.telecomste.net:8080/usageRam" 
+url_agent_core = "karadoc.telecomste.net:8080/core" 
+url_agent_network = "karadoc.telecomste.net:8080/usageNetwork"
+
 
 def update_data():
     global usages, times, network_dtr,network_utr, network_names,ramPercent
