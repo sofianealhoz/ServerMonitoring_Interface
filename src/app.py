@@ -14,8 +14,8 @@ usages = []
 times = []
 
 # url pour les requêtes ( à changer )
-url_agent_cpu = "http://localhost:8000/usage" 
-url_agent_core = "http://localhost:8000/core" 
+url_agent_cpu = "http://karadoc.telecomste.net:8080/usage" 
+url_agent_core = "http://karadoc.telecomste.net:8080/core" 
 
 def update_data():
     global usages, times

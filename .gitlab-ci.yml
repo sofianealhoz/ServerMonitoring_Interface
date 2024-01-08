@@ -46,4 +46,7 @@ deploy-job:      # This job runs in the deploy stage.
   environment: production
   script:
     - echo "Deploying application..."
+    #- docker run -i -p 8080:8000 image_runner
+    #Comparer au fichier de "agent" qui explique.
     - echo "Application successfully deployed."
+
