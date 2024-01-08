@@ -150,4 +150,4 @@ if __name__ == '__main__':
     update_thread = Thread(target=update_data)
     update_thread.daemon = True
     update_thread.start()
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
