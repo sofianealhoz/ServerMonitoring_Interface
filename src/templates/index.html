@@ -66,7 +66,8 @@
 
     <script>
         const servers = [
-            { name: 'Server 1', ipAddress: '192.168.0.10' }
+            { name: 'Server 1', sshAddress: 'grudu@karadoc.telecomste.net', port: 22103 },
+            { name: 'Server 2', sshAddress: 'grudu@mevanwi.telecomste.net', port: 22104 }
             // D'autres serveurs peuvent être ajoutés ici
         ];
 
@@ -80,23 +81,35 @@
         }
 
         function openServerDetails(server) {
-            // Ouvrir une nouvelle page avec les détails du serveur
-            const serverDetailsUrl = `server_details.html?name=${encodeURIComponent(server.name)}&ip=${encodeURIComponent(server.ipAddress)}`;
+            const serverDetailsUrl = `server_details.html?name=${encodeURIComponent(server.name)}&address=${encodeURIComponent(server.sshAddress)}&port=${server.port}`;
             window.open(serverDetailsUrl, '_blank');
         }
 
         function updateServerStatus(server) {
-            // Simulez la vérification de la connexion du serveur
-            const isAlive = Math.random() < 0.5; // Simule une réponse aléatoire (50% de chances que le serveur soit en vie)
-            const serverElement = document.getElementById(`server-${server.name.replace(/\s+/g, '-').toLowerCase()}`);
-
-            if (isAlive) {
-                serverElement.classList.remove('disconnected');
-                serverElement.classList.add('connected');
-            } else {
-                serverElement.classList.remove('connected');
-                serverElement.classList.add('disconnected');
-            }
+            fetch(`https://votre-api.com/ssh-status?serverAddress=${server.sshAddress}&port=${server.port}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Erreur lors de la récupération du statut du serveur.');
+                    }
+                })
+                .then(data => {
+                    const serverElement = document.getElementById(`server-${server.name.replace(/\s+/g, '-').toLowerCase()}`);
+                    if (data.status === 'connected') {
+                        serverElement.classList.remove('disconnected');
+                        serverElement.classList.add('connected');
+                    } else {
+                        serverElement.classList.remove('connected');
+                        serverElement.classList.add('disconnected');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const serverElement = document.getElementById(`server-${server.name.replace(/\s+/g, '-').toLowerCase()}`);
+                    serverElement.classList.remove('connected');
+                    serverElement.classList.add('disconnected');
+                });
         }
 
         const serverList = document.getElementById('serverList');
@@ -104,33 +117,8 @@
             const serverElement = createServerElement(server);
             serverList.appendChild(serverElement);
             updateServerStatus(server);
-            setInterval(() => updateServerStatus(server), 5000); // Mettre à jour l'état toutes les 5 secondes
+            setInterval(() => updateServerStatus(server), 5000);
         });
-
-        const addServerBtn = document.getElementById('addServerBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        addServerBtn.addEventListener('click', () => {
-            const ipInput = document.getElementById('ipInput');
-            const newIpAddress = ipInput.value;
-            
-            if (validateIpAddress(newIpAddress)) {
-                errorMessage.textContent = '';
-                const newServer = { name: `Server ${servers.length + 1}`, ipAddress: newIpAddress };
-                servers.push(newServer);
-
-                const newServerElement = createServerElement(newServer);
-                serverList.appendChild(newServerElement);
-                updateServerStatus(newServer);
-                setInterval(() => updateServerStatus(newServer), 5000); // Mettre à jour l'état toutes les 5 secondes
-            } else {
-                errorMessage.textContent = 'Adresse IP invalide';
-            }
-        });
-
-        function validateIpAddress(ipAddress) {
-            const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
-            return ipRegex.test(ipAddress);
-        }
     </script>
 </body>
 </html>
