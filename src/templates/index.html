@@ -12,8 +12,6 @@
         <ul>
             <li><a href="/">Menu Principal</a></li>
             <li><a href="add_server_route.html">Ajouter un Server</a></li>
-            
-            <li><a href="infos.html">Server 1</a></li>
             {% for server in servers %}
             <li><a href="{{ url_for('server_info', server_id=server['id']) }}">Serveur {{ server['id'] }}</a></li>
             {% endfor %}

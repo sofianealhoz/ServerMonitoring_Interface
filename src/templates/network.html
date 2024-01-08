@@ -18,26 +18,21 @@
     </nav>
 
     <div id="dtr-graph">
-
-        
     </div>
 
-    <div id="utr-graph">
-        
+    <div id="utr-graph">  
     </div>
 
     <script>
-            
-
         
+        
+
         var config = {
             displayModeBar: false  // Désactiver la barre de paramètres
         };
 
-        
-
         function updateGraph() {
-            fetch('/graph/dataNetwork')
+            fetch(`/server/${server_id}/graph/dataNetwork`)
                 .then(response => response.json())
                 .then(data => {
                     var network_dtr = data.network_dtr;

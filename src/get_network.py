@@ -1,11 +1,10 @@
 import requests 
 
 
-url  = "http://localhost:8000/usageNetwork"
+#url  = "http://localhost:8000/usageNetwork"
 
 def get_network_dtr(url):
-    response = requests.get(url)
-    
+    response = requests.get(f"{url}/usageNetwork")
 
     # Vérifier si la requête a réussi (code de statut 200)
     if response.status_code == 200:
@@ -18,7 +17,7 @@ def get_network_dtr(url):
 
 
 def get_network_utr(url):
-    response = requests.get(url)
+    response = requests.get(f"{url}/usageNetwork")
     # Vérifier si la requête a réussi (code de statut 200)
     if response.status_code == 200:
         data = response.json()  # Si la réponse est en format JSON
@@ -29,7 +28,7 @@ def get_network_utr(url):
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
 
 def get_network_name(url):
-    response = requests.get(url)
+    response = requests.get(f"{url}/usageNetwork")
 
     # Vérifier si la requête a réussi (code de statut 200)
     if response.status_code == 200:

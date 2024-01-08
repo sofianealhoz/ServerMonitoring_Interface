@@ -59,7 +59,7 @@
         };
 
         function updateGraph() {
-            fetch('/graph/data')
+            fetch(`/server/${server_id}/graph/data`)
                 .then(response => response.json())
                 .then(data => {
                     var usages = data.usages;

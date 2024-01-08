@@ -4,7 +4,7 @@ import requests
 
 
 def get_ram_total(url):
-    response = requests.get(url)
+    response = requests.get(f"{url}/usageRam")
     
     # Vérifier si la requête a réussi (code de statut 200)
     if response.status_code == 200:
@@ -15,7 +15,7 @@ def get_ram_total(url):
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
 
 def get_ram_percent(url):
-    response = requests.get(url)
+    response = requests.get(f"{url}/usageRam")
     ram_percent  = []
     if response.status_code == 200 : 
         data = response.json()  # Si la réponse est en format JSON
