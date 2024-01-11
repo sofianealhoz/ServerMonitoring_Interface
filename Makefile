@@ -14,6 +14,7 @@ environment: ## Configure venv & dev requirements
 		python3 -m venv .venv; \
 		source .venv/bin/activate; \
 		pip install flask; \
+		pip install requests; \
 	)
 
 clean: ## Remove virtual env
