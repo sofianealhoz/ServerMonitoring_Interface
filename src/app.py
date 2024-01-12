@@ -4,7 +4,7 @@ import time
 from threading import Thread
 from get_cpu import get_cpu, get_number_cpu
 from get_network import get_network_dtr, get_network_utr, get_network_name
-from get_ram import get_ram_total, get_ram_percent
+from get_ram import get_ram_total, get_ram_percent, get_ram_used
 
 app = Flask(__name__)
 
@@ -15,6 +15,7 @@ max_points = 100
 usages = []
 usagesRam = []
 ramPercent = []
+ramUsed = []
 network_dtr = []
 network_utr = []
 times = []
@@ -30,7 +31,7 @@ url_agent_network = "http://karadoc.telecomste.net:8080/usageNetwork"
 
 
 def update_data():
-    global usages, times, network_dtr,network_utr, network_names,ramPercent
+    global usages, times, network_dtr,network_utr, network_names,ramPercent, ramUsed
     while True:
         for server in servers :
             # Cpu info 
@@ -42,6 +43,10 @@ def update_data():
             new_percent = get_ram_percent(server['url'])
             if new_percent:
                 server.setdefault("ramPercent", []).append(new_percent)
+                
+            new_usageRam = get_ram_used(server['url'])
+            if new_usageRam:
+                server.setdefault("ramUsed", []).append(new_usageRam)
 
             # Network info 
             new_data_dtr = get_network_dtr(server['url'])
@@ -131,9 +136,9 @@ def system(server_id):
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
-    global usages, times, ramPercent
+    global usages, times, ramPercent, ramUsed
     if server : 
-        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id)
+        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'])
     else : 
         return render_template('not_found.html')
 
