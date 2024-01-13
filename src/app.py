@@ -5,6 +5,7 @@ from threading import Thread
 from get_cpu import get_cpu, get_number_cpu
 from get_network import get_network_dtr, get_network_utr, get_network_name
 from get_ram import get_ram_total, get_ram_percent, get_ram_used
+from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 
 app = Flask(__name__)
 
@@ -20,6 +21,8 @@ network_dtr = []
 network_utr = []
 times = []
 network_names = []
+hddPercent = []
+hddUsed=[]
 
 # url pour les requêtes ( à changer )
 
@@ -60,6 +63,15 @@ def update_data():
             new_data_name = get_network_name(server['url'])
             if new_data_name:
                 server.setdefault("network_names", []).append(new_data_name)
+
+            # Hard Drive infos
+            new_percentHdd = get_hdd_percent(server['url'])
+            if new_percentHdd:
+                server.setdefault("hddPercent", []).append(new_percentHdd)
+                
+            new_usageHdd = get_hdd_used(server['url'])
+            if new_usageHdd:
+                server.setdefault("hddUsed", []).append(new_usageHdd)
 
             times= server.setdefault("times",[])
             times.append(time.time())
@@ -128,7 +140,8 @@ def system(server_id):
     if server:
         nb_core = get_number_cpu(server['url'])
         total_ram = get_ram_total(server['url'])
-        return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,server=server,server_id = server_id)
+        total_hdd = get_hdd_total(server['url'])
+        return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,total_hdd=total_hdd,server=server,server_id = server_id)
     else:
         return render_template('not_found.html')
 
@@ -136,9 +149,9 @@ def system(server_id):
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
-    global usages, times, ramPercent, ramUsed
+    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed
     if server : 
-        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'])
+        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'])
     else : 
         return render_template('not_found.html')
 
