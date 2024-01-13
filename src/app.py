@@ -7,7 +7,7 @@ from get_network import get_network_dtr, get_network_utr, get_network_name
 import socket 
 from urllib.parse import urlparse
 import requests
-from get_ram import get_ram_total, get_ram_percent, get_ram_used
+from get_ram import get_ram_total, get_ram_percent,get_ram_frequency, get_ram_used
 from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 from get_process import get_process_cpu, get_process_name, get_process_ram
 
@@ -251,7 +251,9 @@ def static_info(server_id):
         user_info = get_user_info(server['url'])
         cpu_frequency = get_cpu_frequency(server['url'])
         nb_core = get_number_cpu(server['url'])
-        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core)
+        ram_frequency = get_ram_frequency(server['url'])
+        ram_total =get_ram_total(server['url'])
+        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
     else:
         return render_template('not_found.html')
     
