@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 import requests
 from get_ram import get_ram_total, get_ram_percent, get_ram_used
 from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
+from get_process import get_process_cpu, get_process_name, get_process_ram
 
 app = Flask(__name__)
 
@@ -83,6 +84,21 @@ def update_data():
             if new_usageHdd:
                 server.setdefault("hddUsed", []).append(new_usageHdd)
 
+            # Top process infos
+            new_process_names = get_process_name(server['url'])
+            if new_process_names:
+                server.setdefault("processNames", []).append(new_process_names)
+
+            
+            new_processRAM = get_process_ram(server['url'])
+            if new_processRAM:
+                server.setdefault("processRAM", []).append(new_processRAM)
+
+            new_processCPU = get_process_cpu(server['url'])
+            if new_processCPU:
+                server.setdefault("processCPU", []).append(new_processCPU)
+
+            # Récupération du temps pour tracer en temps réel
             times= server.setdefault("times",[])
             times.append(time.time())
             
@@ -210,9 +226,9 @@ def system(server_id):
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
-    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed
+    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM
     if server : 
-        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'])
+        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'], processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
         return render_template('not_found.html')
 
