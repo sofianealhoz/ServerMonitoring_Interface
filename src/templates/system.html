@@ -48,6 +48,16 @@
         </div>
     </div>
 
+    <div id="top-process">
+        <h2>TOP PROCESS</h2>
+        <p id="1"></p>
+        <p id="2"></p>
+        <p id="3"></p>
+        <p id="4"></p>
+        <p id="5"></p>
+
+    </div>
+
     <script>
 
         var server_id = {{ server_id }};
@@ -110,6 +120,11 @@
                     var hddUsed = data.hddUsed;
                     var hddUsedVal = hddUsed[hddUsed.length-1].toFixed(2)
 
+                    // Récupération des données top process
+                    var processNames = data.processNames
+                    var processCPU = data.processCPU
+                    var processRAM = data.processRAM
+
                     // Récupération du temps pour tracer en temps réel
                     var times = data.times.map(ts => new Date(ts * 1000));
 
@@ -152,6 +167,10 @@
                     usedHddEle.textContent = `Disk Usage : ${hddUsedVal}/${total_hddVal}GB`
                     var percentHddEle = document.getElementById('hdd-percent');
                     percentHddEle.textContent = `Percent of usage : ${hddPercentVal}%`
+
+                    // Affichage des top process
+                    var processEle1 = document.getElementById('1');
+                    processEle1.textContent = `Process 1 : ${processNames} `
                 });
         };
 
