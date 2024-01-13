@@ -7,6 +7,7 @@
     <title>Dashboard</title>
 </head>
 <body>
+    <h1>Monitoring Dashboard</h1>
     <h2> System Status </h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
@@ -17,17 +18,54 @@
         </ul>
     </nav>
 
-    <div id ="cpu-core">
-        <h3>Number of core : </h3>
-        <p>{{nb_core}}</p> 
+    <div id="CPU">
+        <h2>CPU USAGE</h2>
+        <div id ="cpu-core">    
+            <p>Number of core : {{nb_core}}</p> 
+        </div>
+
+        <div id="average-load">
+            <p id="avg-load"></p>    
+        </div>
+        
+        <div id="cpu-graph"></div>
+
     </div>
-    
-    
-    <div id="cpu-graph">
+
+    <div id="RAM">
+        <h2>RAM USAGE</h2>
+        <div> 
+            <p id="ram-used"> </p>
+        </div>
+        <div id ='ram-graph'></div>
+    </div>
+
+    <div id="HDD">
+        <h2>HARD DRIVE USAGE</h2>
+        <div>
+            <p  id="hdd-used"></p>
+            <p id="hdd-percent"></p>
+        </div>
+    </div>
+
+    <div id="top-process">
+        <h2>TOP PROCESS</h2>
+        <p id="1"></p>
+        <p id="2"></p>
+        <p id="3"></p>
+        <p id="4"></p>
+        <p id="5"></p>
+
+    </div>
 
     <script>
 
         var server_id = {{ server_id }};
+        var total_ram = {{total_ram}}
+        var total_ramVal = total_ram.toFixed(2) // Pourn n'avoir que deux chiffres après la virgule
+
+        var total_hdd = {{total_hdd}}
+        var total_hddVal = total_hdd.toFixed(2)
 
         var layout = {
             title: 'CPU Usage Over Time',
@@ -65,14 +103,40 @@
             fetch(`/server/${server_id}/graph/data`)
                 .then(response => response.json())
                 .then(data => {
+                    // récupération des données du CPU 
                     var usages = data.usages;
+                    var avg_load = usages[usages.length -1]
+
+
+                    // Récupération des données RAM 
                     var ramPercent = data.ramPercent;
+                    var ramUsed = data.ramUsed;
+                    var actRamUsed = ramUsed[ramUsed.length -1]
+                    var ramUsedVal = actRamUsed.toFixed(2) // Pour n'afficher que deux chiffres après la virgule
+
+                    // Récupération des données du hard drive 
+                    var hddPercent = data.hddPercent;
+                    var hddPercentVal = hddPercent[hddPercent.length-1].toFixed(2)
+                    var hddUsed = data.hddUsed;
+                    var hddUsedVal = hddUsed[hddUsed.length-1].toFixed(2)
+
+                    // Récupération des données top process
+                    var processNames = data.processNames
+                    var processCPU = data.processCPU
+                    var processRAM = data.processRAM
+
+                    // Récupération du temps pour tracer en temps réel
                     var times = data.times.map(ts => new Date(ts * 1000));
 
                     if (usages.length > {{ max_points }}) {
                         usages = usages.slice(-{{ max_points }});
                         times = times.slice(-{{ max_points }});
                     }
+
+
+                    // Affichage de CPU average load
+                    var avgLoadEle = document.getElementById('avg-load');
+                    avgLoadEle.textContent = `Average CPU load : ${avg_load}%`
 
                     var cpuPercentages = usages.map(u => u + '%');
                     var points = {
@@ -82,6 +146,11 @@
                         type: 'scatter',
                         mode: 'lines+markers'
                     };
+                    Plotly.newPlot('cpu-graph', [points], layout,config);
+
+                    // Affichage de RAM used/total 
+                    var usedRamEle = document.getElementById('ram-used');
+                    usedRamEle.textContent = `RAM usage : ${ramUsedVal}/${total_ramVal}GB`
 
                     var ramPercentages = ramPercent.map(u => u + '%');
                     var points1 = {
@@ -91,20 +160,71 @@
                         type: 'scatter',
                         mode: 'lines+markers'
                     };
+                    Plotly.newPlot('ram-graph',[points1], layout1,config);   
+                    
+                    // Affichage des données Hard Drive
+                    var usedHddEle = document.getElementById('hdd-used');
+                    usedHddEle.textContent = `Disk Usage : ${hddUsedVal}/${total_hddVal}GB`
+                    var percentHddEle = document.getElementById('hdd-percent');
+                    percentHddEle.textContent = `Percent of usage : ${hddPercentVal}%`
 
-                    Plotly.newPlot('cpu-graph', [points], layout,config);
-                    Plotly.newPlot('ram-graph',[points1], layout1,config);
+                    // Affichage des top process
+                    var processEle1 = document.getElementById('1');
+                    if (processNames && processNames.length>0){
+                        processName1 = processNames[processNames.length-1][0];
+                        processCPU1 = processCPU[processCPU.length-1][0].toFixed(2);
+                        processRAM1 = processRAM[processRAM.length-1][0].toFixed(2);
+                        processEle1.textContent = `Process 1 : ${processName1} | CPU usage : ${processCPU1}% | RAM usage : ${processRAM1}MB `
+                    } else {
+                        processEle1.textContent = `NO PROCESS`
+                    }
+                    
+                    var processEle2 = document.getElementById('2');
+                    if (processNames && processNames.length>1){
+                        processName2 = processNames[processNames.length-1][1];
+                        processCPU2= processCPU[processCPU.length-1][1].toFixed(2);
+                        processRAM2 = processRAM[processRAM.length-1][1].toFixed(2);
+                        processEle2.textContent = `Process 2 : ${processName2} | CPU usage : ${processCPU2}% | RAM usage : ${processRAM2}MB `
+                    } else {
+                        processEle2.textContent = `NO PROCESS`
+                    }
+
+                    var processEle3 = document.getElementById('3');
+                    if (processNames && processNames.length>2){
+                        processName3 = processNames[processNames.length-1][2];
+                        processCPU3 = processCPU[processCPU.length-1][2].toFixed(2);
+                        processRAM3= processRAM[processRAM.length-1][2].toFixed(2);
+                        processEle3.textContent = `Process 3 : ${processName3} | CPU usage : ${processCPU3}% | RAM usage : ${processRAM3}MB `
+                    } else {
+                        processEle3.textContent = `NO PROCESS`
+                    }
+
+                    var processEle4 = document.getElementById('4');
+                    if (processNames && processNames.length>3){
+                        processName4 = processNames[processNames.length-1][3];
+                        processCPU4 = processCPU[processCPU.length-1][3].toFixed(2);
+                        processRAM4 = processRAM[processRAM.length-1][3].toFixed(2);
+                        processEle4.textContent = `Process 4: ${processName4} | CPU usage : ${processCPU4}% | RAM usage : ${processRAM4}MB `
+                    } else {
+                        processEle4.textContent = `NO PROCESS`
+                    }
+
+                    var processEle5 = document.getElementById('5');
+                    if (processNames && processNames.length>4){
+                        processName5= processNames[processNames.length-1][4];
+                        processCPU5 = processCPU[processCPU.length-1][4].toFixed(2);
+                        processRAM5 = processRAM[processRAM.length-1][4].toFixed(2);
+                        processEle5.textContent = `Process 5 : ${processName5} | CPU usage : ${processCPU5}% | RAM usage : ${processRAM5}MB `
+                    } else {
+                        processEle5.textContent = `NO PROCESS`
+                    }
+
                 });
         };
 
         setInterval(updateGraph, 1000);
         updateGraph(); // Appel initial
     </script>
-    </div>
-
-    <div id ='ram-graph'></div>
-
     
-
 </body>
 </html>

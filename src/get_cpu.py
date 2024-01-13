@@ -1,8 +1,5 @@
 import requests
 
-url = "http://karadoc.telecomste.net:8080"
-
-
 def get_cpu(url):
     # Exemple de requête GET
     response = requests.get(f"{url}/usage")
@@ -28,7 +25,4 @@ def get_number_cpu(url):
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
 
-
-#print(get_cpu(url))
-#print(get_number_cpu(url))
 
