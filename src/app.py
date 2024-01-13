@@ -4,7 +4,7 @@ import time
 from threading import Thread
 from get_cpu import get_cpu, get_number_cpu,get_cpu_frequency
 from get_network import get_network_dtr, get_network_utr, get_network_name
-from get_ram import get_ram_total, get_ram_percent
+from get_ram import get_ram_total, get_ram_percent,get_ram_frequency
 from get_user import get_user_info
 app = Flask(__name__)
 
@@ -156,7 +156,9 @@ def static_info(server_id):
         user_info = get_user_info(server['url'])
         cpu_frequency = get_cpu_frequency(server['url'])
         nb_core = get_number_cpu(server['url'])
-        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core)
+        ram_frequency = get_ram_frequency(server['url'])
+        ram_total =get_ram_total(server['url'])
+        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
     else:
         return render_template('not_found.html')
 
