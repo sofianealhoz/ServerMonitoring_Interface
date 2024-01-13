@@ -170,7 +170,55 @@
 
                     // Affichage des top process
                     var processEle1 = document.getElementById('1');
-                    processEle1.textContent = `Process 1 : ${processNames} `
+                    if (processNames && processNames>0){
+                        processName1 = processNames[processNames.length-1][0];
+                        processCPU1 = processCPU[processCPU.length-1][0].toFixed(2);
+                        processRAM1 = processRAM[processRAM.length-1][0].toFixed(2);
+                        processEle1.textContent = `Process 1 : ${processName1} | CPU usage : ${processCPU1}% | RAM usage : ${processRAM1}MB `
+                    } else {
+                        processEle1.textContent = `NO PROCESS`
+                    }
+                    
+                    var processEle2 = document.getElementById('2');
+                    if (processNames && processNames>1){
+                        processName2 = processNames[processNames.length-1][1];
+                        processCPU2= processCPU[processCPU.length-1][1].toFixed(2);
+                        processRAM2 = processRAM[processRAM.length-1][1].toFixed(2);
+                        processEle2.textContent = `Process 2 : ${processName2} | CPU usage : ${processCPU2}% | RAM usage : ${processRAM2}MB `
+                    } else {
+                        processEle2.textContent = `NO PROCESS`
+                    }
+
+                    var processEle3 = document.getElementById('3');
+                    if (processNames && processNames>2){
+                        processName3 = processNames[processNames.length-1][2];
+                        processCPU3 = processCPU[processCPU.length-1][2].toFixed(2);
+                        processRAM3= processRAM[processRAM.length-1][2].toFixed(2);
+                        processEle3.textContent = `Process 3 : ${processName3} | CPU usage : ${processCPU3}% | RAM usage : ${processRAM3}MB `
+                    } else {
+                        processEle3.textContent = `NO PROCESS`
+                    }
+
+                    var processEle4 = document.getElementById('4');
+                    if (processNames && processNames>3){
+                        processName4 = processNames[processNames.length-1][3];
+                        processCPU4 = processCPU[processCPU.length-1][3].toFixed(2);
+                        processRAM4 = processRAM[processRAM.length-1][3].toFixed(2);
+                        processEle4.textContent = `Process 4: ${processName4} | CPU usage : ${processCPU4}% | RAM usage : ${processRAM4}MB `
+                    } else {
+                        processEle4.textContent = `NO PROCESS`
+                    }
+
+                    var processEle5 = document.getElementById('5');
+                    if (processNames && processNames>4){
+                        processName5= processNames[processNames.length-1][4];
+                        processCPU5 = processCPU[processCPU.length-1][4].toFixed(2);
+                        processRAM5 = processRAM[processRAM.length-1][4].toFixed(2);
+                        processEle5.textContent = `Process 5 : ${processName5} | CPU usage : ${processCPU5}% | RAM usage : ${processRAM5}MB `
+                    } else {
+                        processEle5.textContent = `NO PROCESS`
+                    }
+
                 });
         };
 
