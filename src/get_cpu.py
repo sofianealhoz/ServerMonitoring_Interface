@@ -24,5 +24,14 @@ def get_number_cpu(url):
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+def get_cpu_frequency(url):
+    response = requests.get(f"{url}/usage")
+    if response.status_code == 200 : 
+        data = response.json()
+        # Assuming 'frequency' is a key in the response JSON
+        return float(data[0]['frequency'])  # Adjust the key accordingly
+    else : 
+        print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
+        print(response.text)  # Affiche le contenu de la réponse en cas d'erreur        
 
 

@@ -2,11 +2,12 @@ from flask import Flask, render_template,jsonify,request, redirect, url_for
 import random
 import time
 from threading import Thread
-from get_cpu import get_cpu, get_number_cpu
+from get_cpu import get_cpu, get_number_cpu,get_cpu_frequency
 from get_network import get_network_dtr, get_network_utr, get_network_name
-from get_ram import get_ram_total, get_ram_percent, get_ram_used
+from get_ram import get_ram_total, get_ram_percent,get_ram_frequency,get_ram_used
 from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 from get_process import get_process_cpu, get_process_name, get_process_ram
+from get_user import get_user_info
 
 app = Flask(__name__)
 
@@ -32,6 +33,7 @@ urltest ="http://localhost:8000"
 url_agent_ram = "http://karadoc.telecomste.net:8080/usageRam" 
 url_agent_core = "http://karadoc.telecomste.net:8080/core" 
 url_agent_network = "http://karadoc.telecomste.net:8080/usageNetwork"
+url_agent_user = "http://karadoc.telecomste.net:8080/users"
 
 
 def update_data():
@@ -180,6 +182,19 @@ def get_network_graph_data(server_id):
     if server :
         return jsonify(network_dtr= server['network_dtr'],network_utr=server['network_utr'],times = times,network_names=server['network_names'],server=server,server_id=server_id)
     else : 
+        return render_template('not_found.html')
+# Endroit pour les static infos (user infos pour le moment)
+@app.route('/server/<int:server_id>/static_infos.html')
+def static_info(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        user_info = get_user_info(server['url'])
+        cpu_frequency = get_cpu_frequency(server['url'])
+        nb_core = get_number_cpu(server['url'])
+        ram_frequency = get_ram_frequency(server['url'])
+        ram_total =get_ram_total(server['url'])
+        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
+    else:
         return render_template('not_found.html')
 
 
