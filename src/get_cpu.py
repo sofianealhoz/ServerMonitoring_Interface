@@ -9,12 +9,12 @@ def get_cpu(url):
     if response.status_code == 200:
         data = response.json()  # Si la réponse est en format JSON
         for i in range(len(data)):
-            usage_cpu += float(data[i]['usage']) # On somme les différents usage CPU
+            usage_cpu += float(data[i]['usage'])  # On somme les différents usage CPU
             nb_cpu +=1
-        return usage_cpu / nb_cpu # On fait ensuite la moyenne
+        return usage_cpu / nb_cpu  # On fait ensuite la moyenne
     else:
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
-        print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+        print(response.text)   # Affiche le contenu de la réponse en cas d'erreur
         return 0
         
 
@@ -23,7 +23,7 @@ def get_number_cpu(url):
     response = requests.get(f"{url}/core")
     if response.status_code == 200 : 
         data = response.json()
-        return float(data['number']) # On récupère la donnée que l'on veut 
+        return float(data['number'])  # On récupère la donnée que l'on veut 
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
@@ -34,10 +34,10 @@ def get_cpu_frequency(url):
     if response.status_code == 200 : 
         data = response.json()
         # Assuming 'frequency' is a key in the response JSON
-        return float(data[0]['frequency'])  # Adjust the key accordingly
+        return float(data[0]['frequency'])   # Adjust the key accordingly
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
-        print(response.text)  # Affiche le contenu de la réponse en cas d'erreur        
+        print(response.text)   # Affiche le contenu de la réponse en cas d'erreur        
         return 0
 
 

@@ -51,7 +51,7 @@ def update_data():
     while True:
         for server in servers :
             if is_server_reachable(server['url']):   
-            #if server['server_status'] == "Functionnal":
+                #if server['server_status'] == "Functionnal":
                 # Cpu info 
                 new_usage = get_cpu(server['url'])
                 if new_usage:
@@ -146,12 +146,12 @@ def add_server(url, server_nickname):
     else:
         server_status = "Unreachable"
         hostname = urlparse(url).hostname
-        if hostname == None:
+        if hostname is None:
             hostname = url
         IP = "Server unreachable"
         ram_average = "Server unreachable"
         cpu_average = "Server unreachable"
-    servers.append({'url' : url,'name':server_nickname, 'id': len(servers)+1, 'hostname': hostname, 'IP': IP, 'server_status': server_status, 'ram_average': ram_average, 'cpu_average': cpu_average})
+    servers.append({'url' : url,'name':server_nickname, 'id': len(servers) + 1, 'hostname': hostname, 'IP': IP, 'server_status': server_status, 'ram_average': ram_average, 'cpu_average': cpu_average})
 
 def reassign_server_ids():
     for i, server in enumerate(servers, start=1):
@@ -228,19 +228,19 @@ def system(server_id):
 # Menu des données logs
 @app.route('/server/<int:server_id>/logInfos.html')
 def logsInfos(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
+    server = next((s for s in servers if s['id'] == server_id), None)   # On cherche le serveur dont on a l'identifiant dans le path
     if server:
-        return render_template('/logInfos.html',server=server,server_id = server_id) # on affiche la template correspondante
+        return render_template('/logInfos.html',server=server,server_id = server_id)   # on affiche la template correspondante
     else:
         return render_template('not_found.html')
 
 # Endroit où sont stockés les données logs
 @app.route('/server/<int:server_id>/graph/dataLogs') 
 def get_logs_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
+    server = next((s for s in servers if s['id'] == server_id), None)   # On cherche le serveur dont on a l'identifiant dans le path
     
     if server :
-        return jsonify(nb404=server["nb404"],nbUser=server["nbUser"] ,server=server,server_id=server_id, times = times) # On affiche la template correspondante
+        return jsonify(nb404=server["nb404"],nbUser=server["nbUser"] ,server=server,server_id=server_id, times = times)   # On affiche la template correspondante
     else : 
         return render_template('not_found.html')
 
@@ -248,8 +248,8 @@ def get_logs_graph_data(server_id):
 # Endroit où sont stockés les données systèmes
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
-    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM # On créé les variables qu'on a besoin d'importer
+    server = next((s for s in servers if s['id'] == server_id), None)    # On cherche le serveur dont on a l'identifiant dans le path
+    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM    # On créé les variables qu'on a besoin d'importer
     if server : 
         return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server.get('ramUsed', 'N/A'),hddPercent=server.get('hddPercent', 'N/A'),hddUsed = server.get('hddUsed', 'N/A'), processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
@@ -266,13 +266,15 @@ def static_info(server_id):
         user_info = get_user_info(server['url'])
         
         user_info = [
-            {'nickname': server['name'],
-            'hostname':  server['hostname'],
-            'ip': server['IP']}
-            ]
+            {
+                'nickname': server['name'],
+                'hostname': server['hostname'],
+                'ip': server['IP']
+            }
+        ]
         cpu_frequency = str((get_cpu_frequency(server['url'])).__round__(2)) + " MHz"
         nb_core = get_number_cpu(server['url'])
-        ram_frequency = str((get_ram_frequency(server['url'])/1000000000).__round__(2)) + " GHz"
+        ram_frequency = str((get_ram_frequency(server['url']) / 1000000000).__round__(2)) + " GHz"
         ram_total =str(get_ram_total(server['url'])) + " GB"
         return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
     else:
@@ -281,14 +283,14 @@ def static_info(server_id):
 # Liste pour stocker les infos des servers
 servers= [
     {
-    'url': url, 
-    'name' : "karadoc",
-    'id': 1, 
-    'hostname': urlparse(url).hostname,
-    'IP': socket.gethostbyname(urlparse(url).hostname),
-    'server_status': "Fonctionnel" if is_server_reachable(url) else "Non fonctionnel",
-    'ram_average': get_ram_percent(url),
-    'cpu_average': get_cpu(url).__round__(2)
+        'url': url, 
+        'name' : "karadoc",
+        'id': 1, 
+        'hostname': urlparse(url).hostname,
+        'IP': socket.gethostbyname(urlparse(url).hostname),
+        'server_status': "Fonctionnel" if is_server_reachable(url) else "Non fonctionnel",
+        'ram_average': get_ram_percent(url),
+        'cpu_average': get_cpu(url).__round__(2)
     }
 ]
 

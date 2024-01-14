@@ -15,7 +15,6 @@ def get_ram_total(url):
 # Méthode qui renvoie le pourcentage d'utilisation de la ram
 def get_ram_percent(url):
     response = requests.get(f"{url}/usageRam")
-    ram_percent  = []
     if response.status_code == 200 : 
         data = response.json()  # Si la réponse est en format JSON
         return data[-1]['percent']
@@ -33,7 +32,6 @@ def get_ram_frequency(url):
 # Méthode qui renvoie l'utilisation de la RAM
 def get_ram_used(url):
     response = requests.get(f"{url}/usageRam")
-    ram_percent  = []
     if response.status_code == 200 : 
         data = response.json()  # Si la réponse est en format JSON
         return float(data[-1]['used'])
