@@ -48,7 +48,7 @@ Si vous souhaitez contribuer au développement de l'interface, suivez ces étape
 
 ## Licence
 
-Ce projet est publié sous 
+Ce projet est publié sous Apache License 2.0
 
 ---
 

@@ -1,0 +1,120 @@
+/* Réinitialisation de base et styles globaux */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Conteneur principal pour un centrage élégant */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Style de la navigation */
+nav.menu {
+    background: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+nav.menu ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav.menu ul li {
+    margin: 0 15px;
+}
+nav.menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+nav.affichage_serveur {
+    background: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+nav.affichage_serveur ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav.affichage_serveur ul li {
+    margin: 0 15px;
+}
+nav.affichage_serveur ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.server-info {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+} 
+
+.server-info h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.server-info {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+/* Style des informations du serveur */
+.server-info {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+.server-info h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Style des sections CPU et RAM */
+#cpu-and-ram, #ram-graph {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Style spécifique pour les graphiques */
+#ram-graph {
+    height: 400px; /* Ajustez selon vos besoins */
+}
+
+/* Réactivité */
+@media (max-width: 768px) {
+    nav.menu ul {
+        flex-direction: column;
+    }
+    nav.menu ul li {
+        margin: 10px 0;
+    }
+}
