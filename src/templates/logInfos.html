@@ -29,6 +29,8 @@
     </div>
 
     <script>
+
+        server_id = {{server_id}};
         function updateGraph(){
             fetch(`/server/${server_id}/graph/dataLogs`)
                 .then(response => response.json())
