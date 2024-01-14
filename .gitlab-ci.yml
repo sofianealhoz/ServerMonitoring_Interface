@@ -23,6 +23,7 @@ stages:          # List of stages for jobs, and their order of execution
   - deploy
 
 build-job:       # This job runs in the build stage, which runs first.
+  image: docker:19.03-git
   stage: build
   script:
     - echo "Building Docker image..."
