@@ -25,10 +25,7 @@ usages = []
 usagesRam = []
 ramPercent = []
 ramUsed = []
-network_dtr = []
-network_utr = []
 times = []
-network_names = []
 hddPercent = []
 hddUsed=[]
 
@@ -38,7 +35,6 @@ url= "http://karadoc.telecomste.net:8080"
 urltest ="http://localhost:8000"
 url_agent_ram = "http://karadoc.telecomste.net:8080/usageRam" 
 url_agent_core = "http://karadoc.telecomste.net:8080/core" 
-url_agent_network = "http://karadoc.telecomste.net:8080/usageNetwork"
 url_agent_user = "http://karadoc.telecomste.net:8080/users"
 
 def is_server_reachable(url):
@@ -51,7 +47,7 @@ def is_server_reachable(url):
 
 
 def update_data():
-    global usages, times, network_dtr,network_utr, network_names,ramPercent, ramUsed
+    global usages, times,ramPercent, ramUsed
     while True:
         for server in servers :
             if is_server_reachable(server['url']):   
@@ -73,15 +69,6 @@ def update_data():
                 new_usageRam = get_ram_used(server['url'])
                 if new_usageRam:
                     server.setdefault("ramUsed", []).append(new_usageRam)
-
-                # Network info 
-                new_data_dtr = get_network_dtr(server['url'])
-                if new_data_dtr:
-                    server.setdefault("network_dtr", []).append(new_data_dtr)
-
-                new_data_utr = get_network_utr(server['url'])
-                if new_data_utr:
-                    server.setdefault("network_utr", []).append(new_data_utr)
 
                 # Hard Drive infos
                 new_percentHdd = get_hdd_percent(server['url'])
@@ -124,11 +111,6 @@ def update_data():
                     server["usages"] = server["usages"][-max_points:]
                     server["times"] = times[-max_points:]
 
-                if len(server["network_dtr"]) > max_points:
-                    server["network_dtr"] = server["network_dtr"][-max_points:]
-
-                if len(server["network_utr"]) > max_points:
-                    server["network_utr"] = server["network_utr"][-max_points:]
 
             # Affichage du menu principal
                 
@@ -231,15 +213,6 @@ def server_info(server_id):
     
 
 
-# Menu des données réseaux
-@app.route('/server/<int:server_id>/network.html')
-def network(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
-    if server:
-        return render_template('/network.html',max_points = max_points,server=server,server_id = server_id)
-    else:
-        return render_template('not_found.html')
-
 # Menu des données système
 @app.route('/server/<int:server_id>/system.html')
 def system(server_id):
@@ -265,6 +238,7 @@ def logsInfos(server_id):
 @app.route('/server/<int:server_id>/graph/dataLogs') 
 def get_logs_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
+    
     if server :
         return jsonify(nb404=server["nb404"],nbUser=server["nbUser"] ,server=server,server_id=server_id, times = times) # On affiche la template correspondante
     else : 
@@ -282,16 +256,7 @@ def get_graph_data(server_id):
         return render_template('not_found.html')
 
 
-# Endroit où sont stockés les données réseaux
-@app.route('/server/<int:server_id>/graph/dataNetwork')
-def get_network_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
-    global network_dtr,times,network_utr,network_names # On crée les variables qu'on a besoin d'importer
-    if server :
-        # On envoies les données sous format json dans le chemin défini
-        return jsonify(network_dtr= server['network_dtr'],network_utr=server['network_utr'],times = times,network_names=server['network_names'],server=server,server_id=server_id)
-    else : 
-        return render_template('not_found.html')
+
         
 # Endroit pour les static infos (user infos pour le moment)
 @app.route('/server/<int:server_id>/static_infos.html')
