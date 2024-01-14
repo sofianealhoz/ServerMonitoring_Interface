@@ -212,7 +212,7 @@ def get_network_graph_data(server_id):
         return jsonify(network_dtr= server['network_dtr'],network_utr=server['network_utr'],times = times,network_names=server['network_names'],server=server,server_id=server_id)
     else : 
         return render_template('not_found.html')
-
+        
 # Endroit pour les static infos (user infos pour le moment)
 @app.route('/server/<int:server_id>/static_infos.html')
 def static_info(server_id):
