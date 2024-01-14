@@ -146,8 +146,8 @@ def add_server_route():
 def server_info(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
     if server:
-        print(server_functionnal)
         max_points = 100
+        server_functionnal = is_server_reachable(server['url'])
         if server_functionnal:
             # Logique pour récupérer les informations du serveur
             server_name = server['name']
