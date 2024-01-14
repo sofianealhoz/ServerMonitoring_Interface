@@ -8,6 +8,7 @@ from get_ram import get_ram_total, get_ram_percent,get_ram_frequency,get_ram_use
 from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 from get_process import get_process_cpu, get_process_name, get_process_ram
 from get_user import get_user_info
+from get_log import get_nb_error404, get_nb_user
 
 app = Flask(__name__)
 
@@ -81,7 +82,6 @@ def update_data():
             if new_process_names:
                 server.setdefault("processNames", []).append(new_process_names)
 
-            
             new_processRAM = get_process_ram(server['url'])
             if new_processRAM:
                 server.setdefault("processRAM", []).append(new_processRAM)
@@ -89,6 +89,15 @@ def update_data():
             new_processCPU = get_process_cpu(server['url'])
             if new_processCPU:
                 server.setdefault("processCPU", []).append(new_processCPU)
+
+            # Logs Message
+            new_log404 = get_nb_error404(server['url'])
+            if new_log404:
+                server.setdefault('nb404',[]).append(new_log404)
+
+            new_NbUser = get_nb_user(server['url'])
+            if new_NbUser:
+                server.setdefault('nbUser',[]).append(new_NbUser)
 
             # Récupération du temps pour tracer en temps réel
             times= server.setdefault("times",[])
@@ -162,6 +171,26 @@ def system(server_id):
         return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,total_hdd=total_hdd,server=server,server_id = server_id)
     else:
         return render_template('not_found.html')
+
+# Menu des données logs
+@app.route('/server/<int:server_id>/logInfos.html')
+def logsInfos(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        return render_template('/logInfos.html',server=server,server_id = server_id)
+    else:
+        return render_template('not_found.html')
+
+# Endroit où sont stockés les données logs
+@app.route('/server/<int:server_id>/graph/dataLogs')
+def get_logs_graph_data(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    global nb404, nbUser
+    if server :
+        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id, times = times)
+    else : 
+        return render_template('not_found.html')
+
 
 # Endroit où sont stockés les données systèmes
 @app.route('/server/<int:server_id>/graph/data')
