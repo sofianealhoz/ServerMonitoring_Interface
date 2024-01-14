@@ -1,8 +1,6 @@
 import requests
 
-#url = "http://karadoc.telecomste.net/usageRam"
-
-
+# Méthode qui renvoie le total de la RAM
 def get_ram_total(url):
     response = requests.get(f"{url}/usageRam")
     
@@ -14,6 +12,7 @@ def get_ram_total(url):
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
 
+# Méthode qui renvoie le pourcentage d'utilisation de la ram
 def get_ram_percent(url):
     response = requests.get(f"{url}/usageRam")
     ram_percent  = []
@@ -23,19 +22,15 @@ def get_ram_percent(url):
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+
+# Méthode qui renvoie la fréquence de la RAM        
 def get_ram_frequency(url):
     response = requests.get(f"{url}/usageRam")
     if response.status_code == 200 : 
         data = response.json()
-        
         return float(data[0]['frequency'])  # Adjust the key accordingly
-def get_ram_total(url):
-    response = requests.get(f"{url}/usageRam")
-    if response.status_code == 200 : 
-        data = response.json()
-        
-        return float(data[0]['total'])  # Adjust the key accordingly       
 
+# Méthode qui renvoie l'utilisation de la RAM
 def get_ram_used(url):
     response = requests.get(f"{url}/usageRam")
     ram_percent  = []

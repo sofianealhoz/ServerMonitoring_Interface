@@ -8,17 +8,20 @@
     <title>Static Info</title>
 </head>
 <body>
+    <h1>Monitoring Dashboard</h1>
+    <h2>Static Informations</h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
-            <li><a href="/"> Menu Principal</a></li>
-            <li><a href="infos.html"> Infos Server</a></li>
-            <li><a href="system.html"> Système status</a></li>
-            <li><a href="network.html"> Network</a></li>
+            <li><a href="/">Main Menu</a></li>
+            <li><a href="infos.html">Infos Server</a></li>
+            <li><a href="system.html"> System status</a></li>
+            <!--<li><a href="network.html"> Network</a></li>-->
+            <li><a href="static_infos.html"> Static Informations</a></li>
             <li><a href="logInfos.html"> WordPress Infos</a></li>
-
         </ul>
     </nav>
-    <h1>Static Info Page</h1>
+
+    <h2>Static Info Page</h2>
     <div id="static-info">
         <p>Nickname : {{ user_info[0].nickname }}</p>
         <p>Hostname : {{ user_info[0].hostname }}</p>
