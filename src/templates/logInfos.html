@@ -19,6 +19,44 @@
             <li><a href="logInfos.html">Infos Server</a></li>
         </ul>
     </nav>
+
+    <div id="log-info">
+        <h2>About WordPress</h2>
+        <p id="nb-user"></p>
+        <div id="user-graph"></div>
+        <p id="nb-error"></p>
+        
+    </div>
+
+    <script>
+        function updateGraph(){
+            fetch(`/server/${server_id}/graph/dataLogs`)
+                .then(response => response.json())
+                .then(data => {
+                    // Récupération du nombre d'utilisateur connectés
+                    var nbUser =data.nbUser;
+                    var actNbUser = nbUser[nbUser.length-1];
+
+                    //Récupération du nombre d'erreur
+                    var nbError = data.nb404;
+                    var nbErrorVal = nbError[nbError.length-1];
+
+                    // Récupération du temps pour tracer en temps réel
+                    var times = data.times.map(ts => new Date(ts * 1000));
+
+                    // Affichage du nombre d'erreur 
+                    var errorEle = document.getElementById('nb-error');
+                    errorEle.textContent  = `Number of 404 Error : ${nbErrorVal}`;
+
+                    // Affichage du nombre d'utilisateurs connectés
+                    var nbUserEle = document.getElementById('nb-user');
+                    nbUserEle.textContent = `Number of user : ${actNbUser}`
+                })
+        };
+
+        setInterval(updateGraph,1000);
+        updateGraph(); 
+    </script>
     
 </body>
 </html>

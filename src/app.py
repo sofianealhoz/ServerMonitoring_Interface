@@ -233,14 +233,25 @@ def system(server_id):
     else:
         return render_template('not_found.html')
 
-# Menu des données réseaux
+# Menu des données logs
 @app.route('/server/<int:server_id>/logInfos.html')
-def network(server_id):
+def logsInfos(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
     if server:
         return render_template('/logInfos.html',server=server,server_id = server_id)
     else:
         return render_template('not_found.html')
+
+# Endroit où sont stockés les données logs
+@app.route('/server/<int:server_id>/graph/dataLogs')
+def get_logs_graph_data(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    global nb404, nbUser
+    if server :
+        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id)
+    else : 
+        return render_template('not_found.html')
+
 
 # Endroit où sont stockés les données systèmes
 @app.route('/server/<int:server_id>/graph/data')
@@ -262,6 +273,7 @@ def get_network_graph_data(server_id):
         return jsonify(network_dtr= server['network_dtr'],network_utr=server['network_utr'],times = times,network_names=server['network_names'],server=server,server_id=server_id)
     else : 
         return render_template('not_found.html')
+
 # Endroit pour les static infos (user infos pour le moment)
 @app.route('/server/<int:server_id>/static_infos.html')
 def static_info(server_id):
