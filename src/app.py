@@ -9,7 +9,7 @@ from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 from get_process import get_process_cpu, get_process_name, get_process_ram
 from get_user import get_user_info
 from get_log import get_nb_error404, get_nb_user
-
+# Création de notre instace d'application
 app = Flask(__name__)
 
 # Nombre maximum de points à afficher dans le graphique
@@ -31,11 +31,6 @@ hddUsed=[]
 
 url= "http://karadoc.telecomste.net:8080" 
 urltest ="http://localhost:8000"
-url_agent_ram = "http://karadoc.telecomste.net:8080/usageRam" 
-url_agent_core = "http://karadoc.telecomste.net:8080/core" 
-url_agent_network = "http://karadoc.telecomste.net:8080/usageNetwork"
-url_agent_user = "http://karadoc.telecomste.net:8080/users"
-
 
 def update_data():
     global usages, times, network_dtr,network_utr, network_names,ramPercent, ramUsed
@@ -103,7 +98,7 @@ def update_data():
             times= server.setdefault("times",[])
             times.append(time.time())
             
-
+            # Vérification du nombre de données à tracer stockées
             if len(server["usages"]) > max_points:
                 server["usages"] = server["usages"][-max_points:]
                 server["times"] = times[-max_points:]
@@ -129,7 +124,7 @@ def add_server(url):
 # Menu Principal
 @app.route('/')
 def index():
-    return render_template('index.html',servers = servers)
+    return render_template('index.html',servers = servers) 
 
 # Menu d'ajout d'un serveur
 @app.route('/add_server_route.html',methods=['GET','POST'])
@@ -163,11 +158,11 @@ def network(server_id):
 # Menu des données système
 @app.route('/server/<int:server_id>/system.html')
 def system(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
+    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le server dont on l'identifiant dans le path
     if server:
-        nb_core = get_number_cpu(server['url'])
-        total_ram = get_ram_total(server['url'])
-        total_hdd = get_hdd_total(server['url'])
+        nb_core = get_number_cpu(server['url']) # on récupère le nombre de coeur 
+        total_ram = get_ram_total(server['url']) # on récupère le total de la RAM
+        total_hdd = get_hdd_total(server['url']) # on récupère le total sur le hard drive
         return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,total_hdd=total_hdd,server=server,server_id = server_id)
     else:
         return render_template('not_found.html')
@@ -175,19 +170,19 @@ def system(server_id):
 # Menu des données logs
 @app.route('/server/<int:server_id>/logInfos.html')
 def logsInfos(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
+    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
     if server:
-        return render_template('/logInfos.html',server=server,server_id = server_id)
+        return render_template('/logInfos.html',server=server,server_id = server_id) # on affiche la template correspondante
     else:
         return render_template('not_found.html')
 
 # Endroit où sont stockés les données logs
-@app.route('/server/<int:server_id>/graph/dataLogs')
+@app.route('/server/<int:server_id>/graph/dataLogs') 
 def get_logs_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
+    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
     global nb404, nbUser
     if server :
-        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id, times = times)
+        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id, times = times) # On affiche la template correspondante
     else : 
         return render_template('not_found.html')
 
@@ -195,9 +190,10 @@ def get_logs_graph_data(server_id):
 # Endroit où sont stockés les données systèmes
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
-    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM
+    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
+    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM # On créé les variables qu'on a besoin d'importer
     if server : 
+        # On envoie les données sous format json dans le chemin défini
         return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'], processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
         return render_template('not_found.html')
@@ -206,9 +202,10 @@ def get_graph_data(server_id):
 # Endroit où sont stockés les données réseaux
 @app.route('/server/<int:server_id>/graph/dataNetwork')
 def get_network_graph_data(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
-    global network_dtr,times,network_utr,network_names
+    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
+    global network_dtr,times,network_utr,network_names # On crée les variables qu'on a besoin d'importer
     if server :
+        # On envoies les données sous format json dans le chemin défini
         return jsonify(network_dtr= server['network_dtr'],network_utr=server['network_utr'],times = times,network_names=server['network_names'],server=server,server_id=server_id)
     else : 
         return render_template('not_found.html')

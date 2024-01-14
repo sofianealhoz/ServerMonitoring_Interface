@@ -1,7 +1,7 @@
 import requests
 
+# Méthode pour récupérer la moyenne d'utilisation des CPU
 def get_cpu(url):
-    # Exemple de requête GET
     response = requests.get(f"{url}/usage")
     usage_cpu = 0
     nb_cpu = 0  

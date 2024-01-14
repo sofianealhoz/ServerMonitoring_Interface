@@ -59,14 +59,18 @@
     </div>
 
     <script>
-
+        //Récupération de l'id du server
         var server_id = {{ server_id }};
+
+        // Récupération du total de la RAM
         var total_ram = {{total_ram}}
         var total_ramVal = total_ram.toFixed(2) // Pourn n'avoir que deux chiffres après la virgule
 
+        //Récupération de la capacité total du hard drive
         var total_hdd = {{total_hdd}}
         var total_hddVal = total_hdd.toFixed(2)
 
+        // Création du layout pour l'afficahge des données CPU
         var layout = {
             title: 'CPU Usage Over Time',
             xaxis: {
@@ -81,6 +85,7 @@
             displayModeBar: false  // Désactiver la barre de paramètres
         };
 
+        // Création du layout pour l'affichage dees données RAM
         var layout1 = {
             title: 'RAM Usage Over Time',
             xaxis: {
@@ -137,7 +142,7 @@
                     // Affichage de CPU average load
                     var avgLoadEle = document.getElementById('avg-load');
                     avgLoadEle.textContent = `Average CPU load : ${avg_load}%`
-
+                    // Affichage du graphique des données CPU
                     var cpuPercentages = usages.map(u => u + '%');
                     var points = {
                         x: times,
@@ -151,7 +156,7 @@
                     // Affichage de RAM used/total 
                     var usedRamEle = document.getElementById('ram-used');
                     usedRamEle.textContent = `RAM usage : ${ramUsedVal}/${total_ramVal}GB`
-
+                    // Affichage du graphique des données RAM
                     var ramPercentages = ramPercent.map(u => u + '%');
                     var points1 = {
                         x: times,
@@ -222,7 +227,8 @@
                 });
         };
 
-        setInterval(updateGraph, 1000);
+        // Interval de mise à jour des données 
+        setInterval(updateGraph, 1000); // Mise à jour toutes les secondes
         updateGraph(); // Appel initial
     </script>
     
