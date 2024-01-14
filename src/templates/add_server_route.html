@@ -9,20 +9,21 @@
 </head>
 <body>
     <h1>Monitoring Dashboard</h1>
+    <h2>Add Server</h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
-            <li><a href="/">Menu Principal</a></li>
+            <li><a href="/">Main Menu</a></li>
         </ul>
     </nav>
 
     <div id="add-server">
         <form method="POST" action="{{ url_for('add_server_route') }}">
-            <label for="server_nickname">Nickname du serveur:</label>
+            <label for="server_nickname">Server Nickname :</label>
             <input type="text" id="server_nickname" name="server_nickname" required>
 
-            <label for="server_url">Url du serveur:</label>
+            <label for="server_url">Server URL:</label>
             <input type="text" id="server_url" name="server_url" required>
-            <button type="submit">Ajouter</button>
+            <button type="submit">ADD</button>
         </form>
     </div>
     

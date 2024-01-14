@@ -109,11 +109,11 @@ def update_data():
                 # Logs Message
                 new_log404 = get_nb_error404(server['url'])
                 if new_log404:
-                    server.setdefault('nb404',[]).append(new_log404)
+                    server.setdefault("nb404",[]).append(new_log404)
 
                 new_NbUser = get_nb_user(server['url'])
                 if new_NbUser:
-                    server.setdefault('nbUser',[]).append(new_NbUser)
+                    server.setdefault("nbUser",[]).append(new_NbUser)
 
                 # Récupération du temps pour tracer en temps réel
                 times= server.setdefault("times",[])
@@ -145,11 +145,11 @@ def update_data():
                 # Logs Message
                 new_log404 = get_nb_error404(server['url'])
                 if new_log404:
-                    server.setdefault('nb404',[]).append(new_log404)
+                    server.setdefault("nb404",[]).append(new_log404)
 
                 new_NbUser = get_nb_user(server['url'])
                 if new_NbUser:
-                    server.setdefault('nbUser',[]).append(new_NbUser)
+                    server.setdefault("nbUser",[]).append(new_NbUser)
 
                 # Récupération du temps pour tracer en temps réel
                 times= server.setdefault("times",[])
@@ -207,8 +207,11 @@ def add_server(url, server_nickname):
         cpu_average = "Server unreachable"
     servers.append({'url' : url,'name':server_nickname, 'id': len(servers)+1, 'hostname': hostname, 'IP': IP, 'server_status': server_status, 'ram_average': ram_average, 'cpu_average': cpu_average})
 
-def remove_server(server_id):
-    servers.remove(server_id)
+def reassign_server_ids():
+    for i, server in enumerate(servers, start=1):
+        server['id'] = i
+
+
 # Menu Principal
 @app.route('/')
 def index():
@@ -223,6 +226,17 @@ def add_server_route():
         add_server(server_url, server_nickname)
         return redirect(url_for('index'))
     return render_template('add_server_route.html')
+
+# Suppression d'un serveur
+@app.route('/remove_server/<int:server_id>', methods=['POST'])
+def remove_server_route(server_id):
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server:
+        servers.remove(server)
+        reassign_server_ids()  # Réattribuer les IDs après la suppression
+        return redirect(url_for('index'))
+    else:
+        return render_template('not_found.html')
 
 # Vérification de l'état du serveur
 
@@ -287,9 +301,8 @@ def logsInfos(server_id):
 @app.route('/server/<int:server_id>/graph/dataLogs') 
 def get_logs_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
-    global nb404, nbUser
     if server :
-        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id, times = times) # On affiche la template correspondante
+        return jsonify(nb404=server["nb404"],nbUser=server["nbUser"] ,server=server,server_id=server_id, times = times) # On affiche la template correspondante
     else : 
         return render_template('not_found.html')
 
@@ -340,7 +353,7 @@ def static_info(server_id):
 servers= [
     {
     'url': url, 
-    'name' : "test",
+    'name' : "karadoc",
     'id': 1, 
     'hostname': urlparse(url).hostname,
     'IP': socket.gethostbyname(urlparse(url).hostname),

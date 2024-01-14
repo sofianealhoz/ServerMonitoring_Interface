@@ -10,30 +10,30 @@
 </head>
 <body>
     <h1>Monitoring Dashboard</h1>
+    <h2>Infos Server</h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
-            <li><a href="/">Menu Principal</a></li>
+            <li><a href="/">Main Menu</a></li>
             <li><a href="infos.html">Infos Server</a></li>
-            <li><a href="system.html"> Système status</a></li>
+            <li><a href="system.html"> System status</a></li>
             <!--<li><a href="network.html"> Network</a></li>-->
-            <li><a href="static_infos.html"> static Informations</a></li>
+            <li><a href="static_infos.html"> Static Informations</a></li>
             <li><a href="logInfos.html"> WordPress Infos</a></li>
         </ul>
     </nav>
     
     <div class="server-info">
         <h1>Informations about the server {{server_name}}</h1>
-        <p><strong>Nom :</strong> {{ server_name }}</p>
-        <p><strong>Hôte :</strong> {{ server_hostname }}</p>
+        <p><strong>Name :</strong> {{ server_name }}</p>
+        <p><strong>Host :</strong> {{ server_hostname }}</p>
         <p><strong>IP :</strong> {{ server_ip }}</p>
-        <p><strong>Etat du serveur :</strong> {{ server_status }}</p>
-        <!-- Ajoutez d'autres informations ici si nécessaire -->
+        <p><strong>Server State :</strong> {{ server_status }}</p>
     </div>
     
     <div id="cpu-and-ram">
-        <h2>Utilisation moyenne du CPU et de la RAM :</h2>
-        <p>Utilisation CPU: <span id="cpu-usage">Chargement...</span>%</p>
-        <p>Utilisation RAM: <span id="ram-usage">Chargement...</span>%</p>
+        <h2>CPU and RAM average usage:</h2>
+        <p>Utilisation CPU: <span id="cpu-usage">Loading...</span>%</p>
+        <p>Utilisation RAM: <span id="ram-usage">Loading...</span>%</p>
         <script>
     
             var server_id = {{ server_id }};
