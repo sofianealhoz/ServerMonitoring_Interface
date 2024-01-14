@@ -62,14 +62,14 @@ def update_data():
                 if new_usage:
                     server.setdefault("usages", []).append(new_usage)
 
-            # RAm info 
-            new_percent = get_ram_percent(server['url'])
-            if new_percent:
-                server.setdefault("ramPercent", []).append(new_percent)
+                # RAm info 
+                new_percent = get_ram_percent(server['url'])
+                if new_percent:
+                    server.setdefault("ramPercent", []).append(new_percent)
                 
-            new_usageRam = get_ram_used(server['url'])
-            if new_usageRam:
-                server.setdefault("ramUsed", []).append(new_usageRam)
+                new_usageRam = get_ram_used(server['url'])
+                if new_usageRam:
+                    server.setdefault("ramUsed", []).append(new_usageRam)
 
                 new_usageRam = get_ram_used(server['url'])
                 if new_usageRam:
@@ -84,43 +84,43 @@ def update_data():
                 if new_data_utr:
                     server.setdefault("network_utr", []).append(new_data_utr)
 
-            # Hard Drive infos
-            new_percentHdd = get_hdd_percent(server['url'])
-            if new_percentHdd:
-                server.setdefault("hddPercent", []).append(new_percentHdd)
+                # Hard Drive infos
+                new_percentHdd = get_hdd_percent(server['url'])
+                if new_percentHdd:
+                    server.setdefault("hddPercent", []).append(new_percentHdd)
                 
-            new_usageHdd = get_hdd_used(server['url'])
-            if new_usageHdd:
-                server.setdefault("hddUsed", []).append(new_usageHdd)
+                new_usageHdd = get_hdd_used(server['url'])
+                if new_usageHdd:
+                    server.setdefault("hddUsed", []).append(new_usageHdd)
 
-            # Top process infos
-            new_process_names = get_process_name(server['url'])
-            if new_process_names:
-                server.setdefault("processNames", []).append(new_process_names)
+                # Top process infos
+                new_process_names = get_process_name(server['url'])
+                if new_process_names:
+                    server.setdefault("processNames", []).append(new_process_names)
 
-            new_processRAM = get_process_ram(server['url'])
-            if new_processRAM:
-                server.setdefault("processRAM", []).append(new_processRAM)
+                new_processRAM = get_process_ram(server['url'])
+                if new_processRAM:
+                    server.setdefault("processRAM", []).append(new_processRAM)
 
-            new_processCPU = get_process_cpu(server['url'])
-            if new_processCPU:
-                server.setdefault("processCPU", []).append(new_processCPU)
+                new_processCPU = get_process_cpu(server['url'])
+                if new_processCPU:
+                    server.setdefault("processCPU", []).append(new_processCPU)
 
-            # Logs Message
-            new_log404 = get_nb_error404(server['url'])
-            if new_log404:
-                server.setdefault('nb404',[]).append(new_log404)
+                # Logs Message
+                new_log404 = get_nb_error404(server['url'])
+                if new_log404:
+                    server.setdefault('nb404',[]).append(new_log404)
 
-            new_NbUser = get_nb_user(server['url'])
-            if new_NbUser:
-                server.setdefault('nbUser',[]).append(new_NbUser)
+                new_NbUser = get_nb_user(server['url'])
+                if new_NbUser:
+                    server.setdefault('nbUser',[]).append(new_NbUser)
 
-            # Récupération du temps pour tracer en temps réel
-            times= server.setdefault("times",[])
-            times.append(time.time())
+                # Récupération du temps pour tracer en temps réel
+                times= server.setdefault("times",[])
+                times.append(time.time())
             
 
-                # Hard Drive infos
+                    # Hard Drive infos
                 new_percentHdd = get_hdd_percent(server['url'])
                 if new_percentHdd:
                     server.setdefault("hddPercent", []).append(new_percentHdd)
@@ -163,8 +163,8 @@ def update_data():
                 if len(server["network_dtr"]) > max_points:
                     server["network_dtr"] = server["network_dtr"][-max_points:]
 
-            if len(server["network_utr"]) > max_points:
-                server["network_utr"] = server["network_utr"][-max_points:]
+                if len(server["network_utr"]) > max_points:
+                    server["network_utr"] = server["network_utr"][-max_points:]
 
             # Affichage du menu principal
                 
@@ -265,11 +265,11 @@ def network(server_id):
 # Menu des données système
 @app.route('/server/<int:server_id>/system.html')
 def system(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None) # On cherche le server dont on l'identifiant dans le path
-    if server:
-        nb_core = get_number_cpu(server['url']) # on récupère le nombre de coeur 
-        total_ram = get_ram_total(server['url']) # on récupère le total de la RAM
-        total_hdd = get_hdd_total(server['url']) # on récupère le total sur le hard drive
+    server = next((s for s in servers if s['id'] == server_id), None)
+    if server['server_status'] == "Functionnal":
+        nb_core = get_number_cpu(server['url'])
+        total_ram = get_ram_total(server['url'])
+        total_hdd = get_hdd_total(server['url'])
         return render_template('/system.html', max_points = max_points, nb_core = nb_core,total_ram = total_ram,total_hdd=total_hdd,server=server,server_id = server_id)
     else:
         return render_template('not_found.html')
@@ -300,8 +300,7 @@ def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None) # On cherche le serveur dont on a l'identifiant dans le path
     global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM # On créé les variables qu'on a besoin d'importer
     if server : 
-        # On envoie les données sous format json dans le chemin défini
-        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'], processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
+        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server.get('ramUsed', 'N/A'),hddPercent=server.get('hddPercent', 'N/A'),hddUsed = server.get('hddUsed', 'N/A'), processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
         return render_template('not_found.html')
 
@@ -321,26 +320,18 @@ def get_network_graph_data(server_id):
 @app.route('/server/<int:server_id>/static_infos.html')
 def static_info(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
-    if server:
+    if server['server_status'] == "Functionnal":
         user_info = get_user_info(server['url'])
-        cpu_frequency = get_cpu_frequency(server['url'])
+        
+        user_info = [
+            {'nickname': server['name'],
+            'hostname':  server['hostname'],
+            'ip': server['IP']}
+            ]
+        cpu_frequency = str((get_cpu_frequency(server['url'])).__round__(2)) + " MHz"
         nb_core = get_number_cpu(server['url'])
-        ram_frequency = get_ram_frequency(server['url'])
-        ram_total =get_ram_total(server['url'])
-        return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
-    else:
-        return render_template('not_found.html')
-
-# Endroit pour les static infos (user infos pour le moment)
-@app.route('/server/<int:server_id>/static_infos.html')
-def static_info(server_id):
-    server = next((s for s in servers if s['id'] == server_id), None)
-    if server:
-        user_info = get_user_info(server['url'])
-        cpu_frequency = get_cpu_frequency(server['url'])
-        nb_core = get_number_cpu(server['url'])
-        ram_frequency = get_ram_frequency(server['url'])
-        ram_total =get_ram_total(server['url'])
+        ram_frequency = str((get_ram_frequency(server['url'])/1000000000).__round__(2)) + " GHz"
+        ram_total =str(get_ram_total(server['url'])) + " GB"
         return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
     else:
         return render_template('not_found.html')

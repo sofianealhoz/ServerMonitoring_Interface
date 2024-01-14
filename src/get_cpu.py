@@ -15,6 +15,8 @@ def get_cpu(url):
     else:
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+        return 0
+        
 
 # Méthode pour récupérer le nombre de coeurs
 def get_number_cpu(url):
@@ -36,5 +38,6 @@ def get_cpu_frequency(url):
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur        
+        return 0
 
 
