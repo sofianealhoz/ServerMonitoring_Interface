@@ -118,43 +118,6 @@ def update_data():
                 # Récupération du temps pour tracer en temps réel
                 times= server.setdefault("times",[])
                 times.append(time.time())
-            
-
-                    # Hard Drive infos
-                new_percentHdd = get_hdd_percent(server['url'])
-                if new_percentHdd:
-                    server.setdefault("hddPercent", []).append(new_percentHdd)
-
-                new_usageHdd = get_hdd_used(server['url'])
-                if new_usageHdd:
-                    server.setdefault("hddUsed", []).append(new_usageHdd)
-
-                # Top process infos
-                new_process_names = get_process_name(server['url'])
-                if new_process_names:
-                    server.setdefault("processNames", []).append(new_process_names)
-
-                new_processRAM = get_process_ram(server['url'])
-                if new_processRAM:
-                    server.setdefault("processRAM", []).append(new_processRAM)
-
-                new_processCPU = get_process_cpu(server['url'])
-                if new_processCPU:
-                    server.setdefault("processCPU", []).append(new_processCPU)
-
-                # Logs Message
-                new_log404 = get_nb_error404(server['url'])
-                if new_log404:
-                    server.setdefault("nb404",[]).append(new_log404)
-
-                new_NbUser = get_nb_user(server['url'])
-                if new_NbUser:
-                    server.setdefault("nbUser",[]).append(new_NbUser)
-
-                # Récupération du temps pour tracer en temps réel
-                times= server.setdefault("times",[])
-                times.append(time.time())
-
 
                 if len(server["usages"]) > max_points:
                     server["usages"] = server["usages"][-max_points:]
