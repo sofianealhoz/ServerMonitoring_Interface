@@ -300,7 +300,7 @@ def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
     global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM
     if server : 
-        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'], processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
+        return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server.get('ramUsed', 'N/A'),hddPercent=server.get('hddPercent', 'N/A'),hddUsed = server.get('hddUsed', 'N/A'), processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
         return render_template('not_found.html')
 
