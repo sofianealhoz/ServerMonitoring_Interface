@@ -12,6 +12,9 @@ from get_hdd import get_hdd_percent, get_hdd_total, get_hdd_used
 from get_process import get_process_cpu, get_process_name, get_process_ram
 from get_user import get_user_info
 from get_log import get_nb_error404, get_nb_user
+import socket 
+from urllib.parse import urlparse
+import requests
 
 app = Flask(__name__)
 
@@ -47,79 +50,82 @@ def is_server_reachable(url):
     except requests.RequestException:
         return False
 
+
 def update_data():
     global usages, times, network_dtr,network_utr, network_names,ramPercent, ramUsed
     while True:
         for server in servers :
-            # Cpu info 
-            new_usage = get_cpu(server['url'])
-            if new_usage:
-                server.setdefault("usages", []).append(new_usage)
+            if is_server_reachable(server['url']):   
+            #if server['server_status'] == "Functionnal":
+                # Cpu info 
+                new_usage = get_cpu(server['url'])
+                if new_usage:
+                    server.setdefault("usages", []).append(new_usage)
 
-            # RAm info 
-            new_percent = get_ram_percent(server['url'])
-            if new_percent:
-                server.setdefault("ramPercent", []).append(new_percent)
-                
-            new_usageRam = get_ram_used(server['url'])
-            if new_usageRam:
-                server.setdefault("ramUsed", []).append(new_usageRam)
+                # RAm info 
+                new_percent = get_ram_percent(server['url'])
+                if new_percent:
+                    server.setdefault("ramPercent", []).append(new_percent)
 
-            # Network info 
-            new_data_dtr = get_network_dtr(server['url'])
-            if new_data_dtr:
-                server.setdefault("network_dtr", []).append(new_data_dtr)
+                new_usageRam = get_ram_used(server['url'])
+                if new_usageRam:
+                    server.setdefault("ramUsed", []).append(new_usageRam)
 
-            new_data_utr = get_network_utr(server['url'])
-            if new_data_utr:
-                server.setdefault("network_utr", []).append(new_data_utr)
+                # Network info 
+                new_data_dtr = get_network_dtr(server['url'])
+                if new_data_dtr:
+                    server.setdefault("network_dtr", []).append(new_data_dtr)
 
-            new_data_name = get_network_name(server['url'])
-            if new_data_name:
-                server.setdefault("network_names", []).append(new_data_name)
+                new_data_utr = get_network_utr(server['url'])
+                if new_data_utr:
+                    server.setdefault("network_utr", []).append(new_data_utr)
 
-            # Hard Drive infos
-            new_percentHdd = get_hdd_percent(server['url'])
-            if new_percentHdd:
-                server.setdefault("hddPercent", []).append(new_percentHdd)
-                
-            new_usageHdd = get_hdd_used(server['url'])
-            if new_usageHdd:
-                server.setdefault("hddUsed", []).append(new_usageHdd)
+                new_data_name = get_network_name(server['url'])
+                if new_data_name:
+                    server.setdefault("network_names", []).append(new_data_name)
 
-            # Top process infos
-            new_process_names = get_process_name(server['url'])
-            if new_process_names:
-                server.setdefault("processNames", []).append(new_process_names)
+                # Hard Drive infos
+                new_percentHdd = get_hdd_percent(server['url'])
+                if new_percentHdd:
+                    server.setdefault("hddPercent", []).append(new_percentHdd)
 
-            new_processRAM = get_process_ram(server['url'])
-            if new_processRAM:
-                server.setdefault("processRAM", []).append(new_processRAM)
+                new_usageHdd = get_hdd_used(server['url'])
+                if new_usageHdd:
+                    server.setdefault("hddUsed", []).append(new_usageHdd)
 
-            new_processCPU = get_process_cpu(server['url'])
-            if new_processCPU:
-                server.setdefault("processCPU", []).append(new_processCPU)
+                # Top process infos
+                new_process_names = get_process_name(server['url'])
+                if new_process_names:
+                    server.setdefault("processNames", []).append(new_process_names)
 
-            # Logs Message
-            new_log404 = get_nb_error404(server['url'])
-            if new_log404:
-                server.setdefault('nb404',[]).append(new_log404)
+                new_processRAM = get_process_ram(server['url'])
+                if new_processRAM:
+                    server.setdefault("processRAM", []).append(new_processRAM)
 
-            new_NbUser = get_nb_user(server['url'])
-            if new_NbUser:
-                server.setdefault('nbUser',[]).append(new_NbUser)
+                new_processCPU = get_process_cpu(server['url'])
+                if new_processCPU:
+                    server.setdefault("processCPU", []).append(new_processCPU)
 
-            # Récupération du temps pour tracer en temps réel
-            times= server.setdefault("times",[])
-            times.append(time.time())
-            
+                # Logs Message
+                new_log404 = get_nb_error404(server['url'])
+                if new_log404:
+                    server.setdefault('nb404',[]).append(new_log404)
 
-            if len(server["usages"]) > max_points:
-                server["usages"] = server["usages"][-max_points:]
-                server["times"] = times[-max_points:]
+                new_NbUser = get_nb_user(server['url'])
+                if new_NbUser:
+                    server.setdefault('nbUser',[]).append(new_NbUser)
 
-            if len(server["network_dtr"]) > max_points:
-                server["network_dtr"] = server["network_dtr"][-max_points:]
+                # Récupération du temps pour tracer en temps réel
+                times= server.setdefault("times",[])
+                times.append(time.time())
+
+
+                if len(server["usages"]) > max_points:
+                    server["usages"] = server["usages"][-max_points:]
+                    server["times"] = times[-max_points:]
+
+                if len(server["network_dtr"]) > max_points:
+                    server["network_dtr"] = server["network_dtr"][-max_points:]
 
             if len(server["network_utr"]) > max_points:
                 server["network_utr"] = server["network_utr"][-max_points:]
@@ -197,14 +203,13 @@ def server_info(server_id):
             server_name = server['name']
             server_hostname = server['hostname']
             server_ip = server['IP']
-            server_status = "Fonctionnel"
+            server_status = "Functionnal"
         else:
-            server_status = "Non fonctionnel"
+            server_status = "Not functionnal"
             server_name = server['name']
-            if server_hostname == None:
+            server_hostname = server['hostname']
+            if server_hostname is None:
                 server_hostname = server['url']
-            else:
-                server_hostname = server['hostname']
             server_ip = "Serveur non détectée"           
         return render_template('infos.html', server=server,server_id = server_id, server_name = server_name, server_hostname = server_hostname, server_ip = server_ip, server_status = server_status, max_points = max_points)
     else:
@@ -257,7 +262,7 @@ def get_logs_graph_data(server_id):
 @app.route('/server/<int:server_id>/graph/data')
 def get_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
-    global usages, times, ramPercent, ramUsed,hddPercent,hddUsed, processNames, processCPU, processRAM
+    global usages, times, ramPercent
     if server : 
         return jsonify(usages=server['usages'], times=times ,ramPercent= server['ramPercent'],server = server, server_id = server_id, ramUsed = server['ramUsed'],hddPercent=server['hddPercent'],hddUsed = server['hddUsed'], processNames = server['processNames'], processCPU = server['processCPU'], processRAM = server['processRAM'])
     else : 
@@ -288,7 +293,7 @@ def static_info(server_id):
         return render_template('static_infos.html', server=server, user_info=user_info, server_id=server_id,cpu_frequency=cpu_frequency,nb_core=nb_core,ram_frequency=ram_frequency,ram_total=ram_total)
     else:
         return render_template('not_found.html')
-    
+
 # Liste pour stocker les infos des servers
 servers= [
     {
