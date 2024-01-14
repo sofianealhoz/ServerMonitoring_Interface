@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+.server-info {
+    background: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.server-info h1 {
+    color: #333;
+}
+
+nav.menu {
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+nav.menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav.menu ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav.menu ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#cpu-and-ram, #ram-graph {
+    background: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#ram-graph {
+    height: 400px; /* Ajustez la hauteur selon vos besoins */
+}
