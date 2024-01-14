@@ -15,6 +15,8 @@ def get_cpu(url):
     else:
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+        return 0
+        
 
 def get_number_cpu(url):
     response = requests.get(f"{url}/core")
@@ -24,6 +26,7 @@ def get_number_cpu(url):
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur
+        return 0
 def get_cpu_frequency(url):
     response = requests.get(f"{url}/usage")
     if response.status_code == 200 : 
@@ -33,5 +36,6 @@ def get_cpu_frequency(url):
     else : 
         print(f"Erreur lors de la requête GET. Code de statut : {response.status_code}")
         print(response.text)  # Affiche le contenu de la réponse en cas d'erreur        
+        return 0
 
 
