@@ -32,10 +32,7 @@ hddUsed=[]
 # url pour les requêtes ( à changer )
 
 url= "http://karadoc.telecomste.net:8080" 
-urltest ="http://localhost:8000"
-url_agent_ram = "http://karadoc.telecomste.net:8080/usageRam" 
-url_agent_core = "http://karadoc.telecomste.net:8080/core" 
-url_agent_user = "http://karadoc.telecomste.net:8080/users"
+url2= "http://mevanwi.telecomste.net:8080"
 
 def is_server_reachable(url):
     try:
@@ -291,6 +288,16 @@ servers= [
         'server_status': "Fonctionnel" if is_server_reachable(url) else "Non fonctionnel",
         'ram_average': get_ram_percent(url),
         'cpu_average': get_cpu(url).__round__(2)
+    },
+    {
+        'url': url2,
+        'name' : "mevanwi",
+        'id': 2, 
+        'hostname': urlparse(url2).hostname,
+        'IP': socket.gethostbyname(urlparse(url2).hostname),
+        'server_status': "Fonctionnel" if is_server_reachable(url2) else "Non fonctionnel",
+        'ram_average': get_ram_percent(url2),
+        'cpu_average': get_cpu(url2).__round__(2)
     }
 ]
 
