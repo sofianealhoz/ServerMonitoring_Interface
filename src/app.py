@@ -3,7 +3,6 @@ import random
 import time
 from threading import Thread
 from get_cpu import get_cpu, get_number_cpu,get_cpu_frequency
-from get_network import get_network_dtr, get_network_utr, get_network_name
 import socket 
 from urllib.parse import urlparse
 import requests
@@ -109,11 +108,13 @@ def update_data():
                 # Logs Message
                 new_log404 = get_nb_error404(server['url'])
                 if new_log404:
-                    server.setdefault("nb404",[]).append(new_log404)
+                    #server.setdefault("nb404",[]).append(new_log404)
+                    server['nb404'] = new_log404
 
                 new_NbUser = get_nb_user(server['url'])
                 if new_NbUser:
-                    server.setdefault("nbUser",[]).append(new_NbUser)
+                    #server.setdefault("nbUser",[]).append(new_NbUser)
+                    server['nbUser'] = new_NbUser
 
                 # Récupération du temps pour tracer en temps réel
                 times= server.setdefault("times",[])
