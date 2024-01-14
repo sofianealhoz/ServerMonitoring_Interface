@@ -1,7 +1,7 @@
 import requests
 
+# Méthode poue récupérer l'espace occupé pour le hard drive
 def get_hdd_used(url):
-    # Exemple de requête GET
     response = requests.get(f"{url}/usageHdd")
     # Vérifier si la requête a réussi (code de statut 200)
     if response.status_code == 200:
