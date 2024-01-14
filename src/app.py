@@ -187,7 +187,7 @@ def get_logs_graph_data(server_id):
     server = next((s for s in servers if s['id'] == server_id), None)
     global nb404, nbUser
     if server :
-        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id)
+        return jsonify(nb404=server['nb404'],nbUser=server['nbUser'] ,server=server,server_id=server_id, times = times)
     else : 
         return render_template('not_found.html')
 
