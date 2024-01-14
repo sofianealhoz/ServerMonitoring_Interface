@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     <title>Dashboard</title>
 </head>
@@ -16,6 +17,41 @@
             <li><a href="network.html"> Network</a></li>
         </ul>
     </nav>
+    
+    <div class="server-info">
+        <h1>Informations sur le Serveur {{server_name}}</h1>
+        <p><strong>Nom :</strong> {{ server_name }}</p>
+        <p><strong>Hôte :</strong> {{ server_hostname }}</p>
+        <p><strong>IP :</strong> {{ server_ip }}</p>
+        <p><strong>Etat du serveur :</strong> {{ server_status }}</p>
+        <!-- Ajoutez d'autres informations ici si nécessaire -->
+    </div>
+    
+    <div id="cpu-and-ram">
+        <h2>Utilisation moyenne du CPU et de la RAM :</h2>
+        <p>Utilisation CPU: <span id="cpu-usage">Chargement...</span>%</p>
+        <p>Utilisation RAM: <span id="ram-usage">Chargement...</span>%</p>
+        <script>
+    
+            var server_id = {{ server_id }};
+    
+            function updateData() {
+                fetch(`/server/${server_id}/graph/data`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var usages = data.usages;
+                        var ramPercent = data.ramPercent;
+                        document.getElementById('cpu-usage').innerText = usages[usages.length - 1].toFixed(2);
+                        document.getElementById('ram-usage').innerText = ramPercent[ramPercent.length - 1];
+                    });
+            };
+            setInterval(updateData, 1000);
+            updateData(); // Appel initial
+        </script>
+        
+    </div>
+
+    <div id ='ram-graph'></div>
     
 </body>
 </html>

@@ -19,8 +19,11 @@
 
     <div id="add-server">
         <form method="POST" action="{{ url_for('add_server_route') }}">
+            <label for="server_nickname">Nickname du serveur:</label>
+            <input type="text" id="server_nickname" name="server_nickname" required>
+
             <label for="server_url">Url du serveur:</label>
-            <input type="text" id="server_name" url="server_url" required>
+            <input type="text" id="server_url" name="server_url" required>
             <button type="submit">Ajouter</button>
         </form>
     </div>

@@ -5,19 +5,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Dashboard</title>
 </head>
 <body>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
-            <li><a href="/">Menu Principal</a></li>
-            <li><a href="add_server_route.html">Ajouter un Server</a></li>
-            {% for server in servers %}
-            <li><a href="{{ url_for('server_info', server_id=server['id']) }}">Serveur {{ server['id'] }}</a></li>
-            {% endfor %}
-            
+            <li><a href="/">Main</a></li>
+            <li><a href="add_server_route.html">Add a server</a></li>
         </ul>
     </nav>
     
+    <nav class="affichage_serveur"> <span class="sous-titre"> Servers </span>
+        <ul>
+            {% for server in servers %}
+            <li>
+                <a href="{{ url_for('server_info', server_id=server['id']) }}" type="button">
+                    <div class="server-icon">
+                        <i class="fas fa-server"></i>
+                        {{ server['id'] }} : {{ server['name'] }}
+                    </div>
+                    <div class="server-info">
+                        <h1>{{server['name']}}</h1>
+                        <p><strong>State server : {{ server['server_status'] }}</strong></p>
+                        <p><strong>Hostname : {{server['hostname']}}</strong></p>
+                        <p><strong>IP : {{ server['IP'] }}</strong></p>
+                        <p>
+                            <strong>RAM Usage :</strong> 
+                            {% if server['ram_average'] != "Server unreachable" %}
+                                <strong>{{ server['ram_average'] }} %</strong>
+                            {% else %}
+                                <strong>{{ server['ram_average'] }}</strong>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>CPU Usage :</strong> 
+                            {% if server['cpu_average'] != 'Server unreachable' %}
+                                <strong>{{ server['cpu_average'] }} %</strong>
+                            {% else %}
+                                <strong>{{ server['cpu_average'] }}</strong>
+                            {% endif %}
+                        </p>
+                        </div>
+                </a>
+            </li>            
+            {% endfor %}
+        </ul>
+    </nav>
 </body>
 </html>
