@@ -7,6 +7,7 @@
     <title>Dashboard</title>
 </head>
 <body>
+    <h1>Monitoring Dashboard</h1>
     <h2> System Status </h2>
     <nav class="menu"> <span class="titre"> Dashboard </span>
         <ul>
@@ -17,17 +18,33 @@
         </ul>
     </nav>
 
-    <div id ="cpu-core">
-        <h3>Number of core : </h3>
-        <p>{{nb_core}}</p> 
+    <div id="CPU">
+        <h2>CPU USAGE</h2>
+        <div id ="cpu-core">    
+            <p>Number of core : {{nb_core}}</p> 
+        </div>
+
+        <div id="average-load">
+            <p id="avg-load"></p>    
+        </div>
+        
+        <div id="cpu-graph"></div>
+
     </div>
-    
-    
-    <div id="cpu-graph">
+
+    <div id="RAM">
+        <h2>RAM USAGE</h2>
+        <div> 
+            <p id="ram-used"> </p>
+        </div>
+        <div id ='ram-graph'></div>
+    </div>
 
     <script>
 
         var server_id = {{ server_id }};
+        var total_ram = {{total_ram}}
+        var total_ramVal = total_ram.toFixed(2) // Pourn n'avoir que deux chiffres après la virgule
 
         var layout = {
             title: 'CPU Usage Over Time',
@@ -65,14 +82,29 @@
             fetch(`/server/${server_id}/graph/data`)
                 .then(response => response.json())
                 .then(data => {
+                    // récupération des données du CPU 
                     var usages = data.usages;
+                    var avg_load = usages[usages.length -1]
+
+
+                    // Récupération des données RAM 
                     var ramPercent = data.ramPercent;
+                    var ramUsed = data.ramUsed;
+                    var actRamUsed = ramUsed[ramUsed.length -1]
+                    var ramUsedVal = actRamUsed.toFixed(2) // Pour n'afficher que deux chiffres après la virgule
+
+                    // Récupération du temps pour tracer en temps réel
                     var times = data.times.map(ts => new Date(ts * 1000));
 
                     if (usages.length > {{ max_points }}) {
                         usages = usages.slice(-{{ max_points }});
                         times = times.slice(-{{ max_points }});
                     }
+
+
+                    // Affichage de CPU average load
+                    var avgLoadEle = document.getElementById('avg-load');
+                    avgLoadEle.textContent = `Average CPU load : ${avg_load}%`
 
                     var cpuPercentages = usages.map(u => u + '%');
                     var points = {
@@ -82,6 +114,11 @@
                         type: 'scatter',
                         mode: 'lines+markers'
                     };
+                    Plotly.newPlot('cpu-graph', [points], layout,config);
+
+                    // Affichage de RAM used/total 
+                    var usedRamEle = document.getElementById('ram-used');
+                    usedRamEle.textContent = `RAM usage : ${ramUsedVal}/${total_ramVal}GB`
 
                     var ramPercentages = ramPercent.map(u => u + '%');
                     var points1 = {
@@ -91,20 +128,13 @@
                         type: 'scatter',
                         mode: 'lines+markers'
                     };
-
-                    Plotly.newPlot('cpu-graph', [points], layout,config);
-                    Plotly.newPlot('ram-graph',[points1], layout1,config);
+                    Plotly.newPlot('ram-graph',[points1], layout1,config);              
                 });
         };
 
         setInterval(updateGraph, 1000);
         updateGraph(); // Appel initial
     </script>
-    </div>
-
-    <div id ='ram-graph'></div>
-
     
-
 </body>
 </html>
